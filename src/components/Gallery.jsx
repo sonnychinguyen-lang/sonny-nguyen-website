@@ -5,7 +5,8 @@ import { useCursor, MeshReflectorMaterial, Image, Text } from '@react-three/drei
 import { easing } from 'maath'
 
 const GOLDENRATIO = 1.61803398875
-const FONT = '/fonts/Inter-Bold.woff'
+import { asset } from '../asset.js'
+const FONT = asset('fonts/Inter-Bold.woff')
 
 // The pmndrs image-gallery example, with captions and controlled selection.
 export default function Gallery({ frames, selected, onSelect, rest = [0, 0, 7.6] }) {

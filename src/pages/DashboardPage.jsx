@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieCha
 import ProjectLayout from './ProjectLayout.jsx'
 import MapView from '../components/MapView.jsx'
 import { byId } from '../data.js'
+import { asset } from '../asset.js'
 
 const project = byId('dashboard')
 const tabs = [{ id: 'overview', title: 'Dashboard' }]
@@ -23,7 +24,7 @@ export default function DashboardPage() {
   const [data, setData] = useState(null)
   const [hood, setHood] = useState('All')
   const [status, setStatus] = useState('All')
-  useEffect(() => { fetch('/data/dashboard.json').then((r) => r.json()).then(setData) }, [])
+  useEffect(() => { fetch(asset('data/dashboard.json')).then((r) => r.json()).then(setData) }, [])
   const L = data?.lookups
   const rows = useMemo(() => {
     if (!data) return []

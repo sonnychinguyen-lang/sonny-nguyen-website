@@ -5,7 +5,8 @@ import { useCursor, MeshPortalMaterial, CameraControls, Text, Preload, useTextur
 import { easing, geometry } from 'maath'
 
 extend(geometry)
-const FONT = '/fonts/Inter-Bold.woff'
+import { asset } from '../asset.js'
+const FONT = asset('fonts/Inter-Bold.woff')
 
 // The pmndrs enter-portals example: one portal per timeline event.
 // Double-click (or the Enter button) walks into a portal; inside is an illustrated backdrop with the event text in a glass box.

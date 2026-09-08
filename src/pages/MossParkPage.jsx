@@ -4,11 +4,12 @@ import { ColumnLayer } from '@deck.gl/layers'
 import ProjectLayout from './ProjectLayout.jsx'
 import MapView from '../components/MapView.jsx'
 import { byId } from '../data.js'
+import { asset } from '../asset.js'
 import { neighbourhood, householdTypes, income, maintainerAge, compstat, dowNotes } from '../data/mosspark.js'
 
 const project = byId('moss-park')
 const tabs = [{ id: 'overview', title: 'Review' }]
-function useMci() { const [d, setD] = useState(null); useEffect(() => { fetch('/data/mosspark.json').then((r) => r.json()).then(setD) }, []); return d }
+function useMci() { const [d, setD] = useState(null); useEffect(() => { fetch(asset('data/mosspark.json')).then((r) => r.json()).then(setD) }, []); return d }
 const PALETTE = ['#1e8578', '#c77a1f', '#4a5aa8', '#c1443a', '#6b6b66', '#8fb9c2', '#a3c26a', '#7a3ca0', '#e07a5f', '#3d405b', '#81b29a', '#f2cc8f']
 const TYPE_COLORS = { 'B&E': '#4a5aa8', Robbery: '#c77a1f', Assault: '#c1443a', 'Auto theft': '#1e8578' }
 

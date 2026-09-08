@@ -3,6 +3,7 @@ import { ScatterplotLayer, PolygonLayer } from '@deck.gl/layers'
 import ProjectLayout from './ProjectLayout.jsx'
 import MapView from '../components/MapView.jsx'
 import { byId } from '../data.js'
+import { asset } from '../asset.js'
 import { circlePolygon } from '../data/synth.js'
 import Legend from '../components/Legend.jsx'
 import HowToRead from '../components/HowToRead.jsx'
@@ -14,7 +15,7 @@ const NICE = { 'ASSAULT-COMMON OR TRESPASS': 'Assault – common or trespass', '
 
 export default function GreenTimbersPage() {
   const [data, setData] = useState(null)
-  useEffect(() => { fetch('/data/greentimbers.json').then((r) => r.json()).then(setData) }, [])
+  useEffect(() => { fetch(asset('data/greentimbers.json')).then((r) => r.json()).then(setData) }, [])
   const center = [-122.8255, 49.1748]
   const layers = useMemo(() => data ? [
     new PolygonLayer({ id: 'buffer', data: [{ polygon: circlePolygon(center, 1800) }], getPolygon: (d) => d.polygon, filled: true, getFillColor: [30, 133, 120, 16], stroked: true, getLineColor: [70, 70, 66, 200], lineWidthMinPixels: 2 }),

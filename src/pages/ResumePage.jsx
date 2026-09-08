@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { resume } from '../data/resume.js'
+import { asset } from '../asset.js'
 
 export default function ResumePage() {
   return (
@@ -11,7 +12,7 @@ export default function ResumePage() {
           <h1 className="page-title">{resume.name}</h1>
           <span className="page-label">{resume.title}</span>
         </div>
-        <a className="dl" href="/files/sonny-nguyen-resume.pdf" target="_blank" rel="noreferrer">Download PDF ↗</a>
+        <a className="dl" href={asset("files/sonny-nguyen-resume.pdf")} target="_blank" rel="noreferrer">Download PDF ↗</a>
       </header>
       <main className="resume-body">
         <section className="resume-main">

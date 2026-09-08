@@ -7,6 +7,7 @@ import AssociationGraph from '../components/AssociationGraph.jsx'
 import PortalsTimeline from '../components/PortalsTimeline.jsx'
 import Legend from '../components/Legend.jsx'
 import { byId } from '../data.js'
+import { asset } from '../asset.js'
 import { incidents, places, association, phoneNetwork } from '../data/eholdup.js'
 import { timeline, TYPE_COLORS } from '../data/timeline.js'
 
@@ -111,7 +112,7 @@ function PhonesTab() {
 }
 
 function TimelineTab() {
-  const items = timeline.map((t, i) => ({ ...t, img: `/portals/${t.id}.jpg`, color: TYPE_COLORS[t.type], bg: ['#e4cdac', '#d1d1ca', '#cfd9c2', '#e2d4d8', '#c9d8e3'][i % 5], short: t.title.split(' — ')[0].replace('Surveillance', 'Surv.').replace('Intelligence report', 'Intel') }))
+  const items = timeline.map((t, i) => ({ ...t, img: asset(`portals/${t.id}.jpg`), color: TYPE_COLORS[t.type], bg: ['#e4cdac', '#d1d1ca', '#cfd9c2', '#e2d4d8', '#c9d8e3'][i % 5], short: t.title.split(' — ')[0].replace('Surveillance', 'Surv.').replace('Intelligence report', 'Intel') }))
   const [focus, setFocus] = useState(timeline[0].id)
   const [entered, setEntered] = useState(false)
   const idx = timeline.findIndex((t) => t.id === focus)
@@ -146,10 +147,10 @@ function ImageTab({ img, title, caption, pdf }) {
   return (
     <div className="image-stage">
       <figure onClick={() => setBig(true)}>
-        <img src={`/projects/${img}`} alt={title} />
-        <figcaption>{caption}{pdf && <> · <a href={`/projects/${pdf}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Open the PDF ↗</a></>}</figcaption>
+        <img src={asset(`projects/${img}`)} alt={title} />
+        <figcaption>{caption}{pdf && <> · <a href={asset(`projects/${pdf}`)} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Open the PDF ↗</a></>}</figcaption>
       </figure>
-      {big && <div className="lightbox" onClick={() => setBig(false)}><img src={`/projects/${img}`} alt={title} /></div>}
+      {big && <div className="lightbox" onClick={() => setBig(false)}><img src={asset(`projects/${img}`)} alt={title} /></div>}
     </div>
   )
 }

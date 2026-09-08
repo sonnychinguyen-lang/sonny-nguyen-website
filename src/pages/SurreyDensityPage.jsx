@@ -3,6 +3,7 @@ import { GridCellLayer, ScatterplotLayer } from '@deck.gl/layers'
 import ProjectLayout from './ProjectLayout.jsx'
 import MapView from '../components/MapView.jsx'
 import { byId } from '../data.js'
+import { asset } from '../asset.js'
 import { densityColor, changeColor } from '../data/synth.js'
 import HowToRead from '../components/HowToRead.jsx'
 
@@ -15,7 +16,7 @@ export default function SurreyDensityPage() {
   const [mode, setMode] = useState('columns')
   const [tab, setTab] = useState('a')
   const mapRef = useRef(null)
-  useEffect(() => { fetch('/data/density.json').then((r) => r.json()).then(setData) }, [])
+  useEffect(() => { fetch(asset('data/density.json')).then((r) => r.json()).then(setData) }, [])
   const applyMode = (m) => setMode(m)
   return (
     <ProjectLayout project={project} tabs={tabs}>

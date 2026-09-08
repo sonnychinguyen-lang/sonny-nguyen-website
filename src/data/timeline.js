@@ -1,10 +1,11 @@
+import { asset } from '../asset.js'
 // Project E-HOLDUP timeline (fictional training scenario). Rendered as gallery cards in /public/timeline.
 export const TYPE_COLORS = { robbery: '#c1443a', statement: '#4a5aa8', intel: '#c77a1f', surveillance: '#1e8578', suspicious: '#7a3ca0' }
 export const TYPE_LABELS = { robbery: 'Robbery', statement: 'Statement', intel: 'Intelligence report', surveillance: 'Surveillance', suspicious: 'Suspicious circumstance' }
 export const TYPE_BG = { robbery: '#2a1a1a', statement: '#1b2033', intel: '#2b2114', surveillance: '#122622', suspicious: '#22162b' }
 // Portal artwork: placeholder illustrations in /public/portals — swap for ComfyUI renders with the same filenames.
-export const TYPE_IMG = { robbery: '/portals/robbery.png', statement: '/portals/statement.png', intel: '/portals/intel.png', surveillance: '/portals/surveillance.png', suspicious: '/portals/pub.png' }
-export const EVENT_IMG = { s1: '/portals/vault.png', s2: '/portals/vault.png', s4: '/portals/truck.png', r5: '/portals/truck.png', w1: '/portals/truck.png' }
+export const TYPE_IMG = { robbery: asset('portals/robbery.png'), statement: asset('portals/statement.png'), intel: asset('portals/intel.png'), surveillance: asset('portals/surveillance.png'), suspicious: asset('portals/pub.png') }
+export const EVENT_IMG = { s1: asset('portals/vault.png'), s2: asset('portals/vault.png'), s4: asset('portals/truck.png'), r5: asset('portals/truck.png'), w1: asset('portals/truck.png') }
 export const timeline = [
   { id: 'r1', type: 'robbery', date: '2025-04-26', time: '12:40', title: 'Robbery 1 — Kam\'s Jewelry & Watches', file: '543011', summary: '9210 Scott Rd, Surrey. Gun and hammer. Victim Cindy KAM assaulted. Blue backpack used; suspects fled in a blue pickup. Forensic identification: negative.', who: ['smith', 'jsandhu', 'mcneil', 'ram'] },
   { id: 'w1', type: 'statement', date: '2025-04-26', time: '13:15', title: 'Witness statement — Sukhdeep BRAR', summary: 'Suspects fled to a blue pickup at the south end of the lot. Suspect 1 removed his mask getting in: Caucasian, shaved head, dressed in black. Female driver: pale skin, large nose, long straight black hair — matches MCNEIL.', who: ['smith', 'mcneil', 'ram'] },

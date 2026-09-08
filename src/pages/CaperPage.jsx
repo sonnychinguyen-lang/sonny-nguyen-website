@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import ProjectLayout from './ProjectLayout.jsx'
 import MapView from '../components/MapView.jsx'
 import { byId } from '../data.js'
+import { asset } from '../asset.js'
 import Legend from '../components/Legend.jsx'
 
 const project = byId('caper')
@@ -20,7 +21,7 @@ const rgb = (c) => `rgb(${c.join(',')})`
 
 function useCaper() {
   const [data, setData] = useState(null)
-  useEffect(() => { fetch('/data/caper.json').then((r) => r.json()).then(setData) }, [])
+  useEffect(() => { fetch(asset('data/caper.json')).then((r) => r.json()).then(setData) }, [])
   return data
 }
 
