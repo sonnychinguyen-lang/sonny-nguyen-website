@@ -33,8 +33,5 @@
   },
   "overrides": {
     "three": "0.185.1"
-  },
-  "allowScripts": {
-    "esbuild@0.25.12": true
   }
 }
