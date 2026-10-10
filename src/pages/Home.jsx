@@ -5,6 +5,7 @@ import Stairs from '../Stairs.jsx'
 import Underlay from '../Underlay.jsx'
 import { projects, flatDocs } from '../data.js'
 import { useTour, steps } from '../tour.jsx'
+import { asset } from '../asset.js'
 
 export default function Home() {
   const [status, setStatus] = useState({ objects: [], cycle: 0 })
@@ -48,6 +49,11 @@ export default function Home() {
               <span className="menu-title">Work history &amp; skills</span>
               <span className="menu-kicker">With a PDF to download</span>
             </Link>
+            <a className="menu-item" href={asset('phonics/')}>
+              <span className="menu-index">Students</span>
+              <span className="menu-title">Sound Hive</span>
+              <span className="menu-kicker">Phonics games · K to grade 7</span>
+            </a>
             <a className="menu-item" href="https://claude.ai/artifact/WJo8k7XuMirVasonwXDGVx" target="_blank" rel="noreferrer">
               <span className="menu-index">Teacher</span>
               <span className="menu-title">Marking desk</span>
