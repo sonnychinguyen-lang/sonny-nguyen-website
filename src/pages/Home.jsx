@@ -54,6 +54,11 @@ export default function Home() {
               <span className="menu-title">Sound Hive</span>
               <span className="menu-kicker">Phonics games · K to grade 7</span>
             </a>
+            <a className="menu-item" href="https://sonny-english-check-in.netlify.app/" target="_blank" rel="noreferrer">
+              <span className="menu-index">Students</span>
+              <span className="menu-title">English Check-In</span>
+              <span className="menu-kicker">A short test · K to grade 12 and ELL</span>
+            </a>
             <a className="menu-item" href="https://claude.ai/artifact/WJo8k7XuMirVasonwXDGVx" target="_blank" rel="noreferrer">
               <span className="menu-index">Teacher</span>
               <span className="menu-title">Marking desk</span>
