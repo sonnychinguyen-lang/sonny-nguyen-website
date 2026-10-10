@@ -263,10 +263,17 @@
 <main id="app"></main>
 <form name="english-check-in" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
   <input type="text" name="student">
+  <textarea name="overview"></textarea>
   <input type="text" name="level">
-  <input type="text" name="scores">
-  <textarea name="summary"></textarea>
-  <input type="text" name="record">
+  <input type="text" name="date">
+  <input type="text" name="spelling">
+  <input type="text" name="grammar">
+  <input type="text" name="reading">
+  <input type="text" name="missed-questions">
+  <input type="text" name="short-answers">
+  <input type="text" name="writing-prompt">
+  <input type="text" name="writing">
+  <input type="text" name="reflection">
   <input type="text" name="bot-field">
 </form>
 <script>
@@ -1826,21 +1833,33 @@
   async function saveToForm(record) {
     const sub = normalize("new", record);
     const content = contentFor(sub);
+    const t = titlesFor(SETS[sub.baseSet] || SETS.g4);
     const readAns = ((sub.attempts.reading || [])[0] || { answers: {} }).answers;
     const shorts = content.reading.items.filter(function (q) { return q.type === "short"; })
-      .map(function (q) { return "Q: " + q.prompt + "\nA: " + (readAns[q.id] || "(blank)"); });
+      .map(function (q) { return q.prompt + " \u2192 " + (readAns[q.id] || "(blank)"); });
+    // every multiple-choice question the student got wrong, with what they chose and the right answer
+    const missed = [];
+    ["spelling", "grammar", "reading"].forEach(function (sec) {
+      (sub.attempts[sec] || []).forEach(function (a, lvl) {
+        itemsFor(a.set, sec, lvl, sub).forEach(function (q) {
+          if (q.type !== "mc" || !Object.prototype.hasOwnProperty.call(a.answers || {}, q.id) || a.answers[q.id] === q.correct) return;
+          missed.push(t[sec] + ": " + q.prompt.replace(/\n/g, " ") + " \u2014 chose \u201c" + q.options[a.answers[q.id]] + "\u201d, answer \u201c" + q.options[q.correct] + "\u201d");
+        });
+      });
+    });
     const scores = resultLines(sub);
-    const summary = [
-      sub.studentName + " \u2014 " + rowLabel(sub) + " \u2014 " + new Date(record.submittedAt).toLocaleString(),
-      "", "AUTO-MARKED", scores.join("\n"),
-      "", "READING SHORT ANSWERS (" + content.reading.title + ")", shorts.join("\n\n") || "(none)",
-      "", "WRITING PROMPT", content.writing.prompt, "", "WRITING", record.writing || "(blank)",
-      record.reflection ? "\nREFLECTION\n" + record.reflection : ""
-    ].join("\n");
     const body = new URLSearchParams({
       "form-name": "english-check-in", "bot-field": "",
-      student: sub.studentName, level: rowLabel(sub), scores: scores.join(" | "),
-      summary: summary, record: JSON.stringify(record)
+      student: sub.studentName,
+      overview: rowLabel(sub) + " \u00b7 " + scores.join(" \u00b7 "),
+      level: rowLabel(sub),
+      date: new Date(record.submittedAt).toLocaleString(),
+      spelling: chainLine(sub, "spelling"), grammar: chainLine(sub, "grammar"), reading: chainLine(sub, "reading"),
+      "missed-questions": missed.length ? missed.map(function (m, k) { return (k + 1) + ") " + m; }).join("   ") : "None",
+      "short-answers": shorts.join("   ") || "None",
+      "writing-prompt": content.writing.prompt,
+      writing: record.writing || "(blank)",
+      reflection: record.reflection || ""
     }).toString();
     state.lastScores = scores;
     const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body });
