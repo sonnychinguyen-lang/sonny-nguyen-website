@@ -1,0 +1,5 @@
+# Netlify hosts only the English Check-In page (public/check-in), so that
+# finished tests are stored by Netlify Forms. The main site is on GitHub Pages.
+[build]
+  command = ""
+  publish = "public/check-in"
