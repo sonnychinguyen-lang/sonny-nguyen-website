@@ -355,3 +355,16 @@ body { background: #eef2e4; }
   .menu-inner { width: 100%; padding: 70px 22px 30px; }
   .portal-btns { gap: 8px; }
 }
+
+/* ---- education page ---- */
+.edu { max-width: 860px; margin: 0 auto; padding: 28px 28px 110px; }
+.edu h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; margin: 28px 0 12px; }
+.edu h2:first-child { margin-top: 0; }
+.edu-intro { font-size: 16px; line-height: 1.7; margin: 0 0 20px; }
+.edu-card { margin-bottom: 12px; padding: 16px 18px; }
+.edu-card p { margin: 0; font-size: 14px; line-height: 1.65; }
+.edu-courses { margin: 4px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.65; }
+.edu-courses li + li { margin-top: 4px; }
+.edu a { color: #5d6b2c; }
+.stat strong.edu-cert { font-size: 19px; }
+@media (max-width: 720px) { .edu { padding: 18px 14px 100px; } .edu-intro { font-size: 15px; } }

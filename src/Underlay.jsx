@@ -7,15 +7,15 @@ export default function Underlay({ onMenu, status, onTour }) {
         <i>Sonny</i>
         <br />
         Nguyen
-        <div className="kicker"><b>Aspiring intelligence &amp; crime analyst.</b> Criminology BA, BCIT forensic investigations. I turn offence data, phone records and case files into maps, networks and findings someone can act on.</div>
-        <div className="box-row"><Link to="/resume" className="resume-box">Resume ↗</Link><button className="resume-box glass-cta" onClick={onTour}>Start the tour ›</button></div>
+        <div className="kicker"><b>Teacher.</b> Head of English at ALPS in Richmond, BC, teaching kindergarten to grade 7. This site is a bit about me: my teaching, my studies, the crime-mapping projects I built at BCIT, and my photography.</div>
+        <div className="box-row"><Link to="/resume" className="resume-box">Resume ↗</Link><Link to="/education" className="resume-box">Education ↗</Link><button className="resume-box glass-cta" onClick={onTour}>Start the tour ›</button></div>
       </div>
       <div className="bottom-right">
         2026
         <br />
         Sonny Nguyen
       </div>
-      <div className="right-middle">Ten steps, seven cases</div>
+      <div className="right-middle">Teaching, studies, projects, photos</div>
       <button className="hamburger" aria-label="Open menu" onClick={onMenu}>
         <div />
         <div />

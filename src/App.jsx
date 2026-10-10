@@ -10,6 +10,7 @@ import MossParkPage from './pages/MossParkPage.jsx'
 import CaperPage from './pages/CaperPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 import PersonalPage from './pages/PersonalPage.jsx'
+import EducationPage from './pages/EducationPage.jsx'
 
 function Overlay() { const { transitioning } = useTour(); return <Transition active={transitioning} /> }
 
@@ -20,6 +21,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/resume" element={<ResumePage />} />
+        <Route path="/education" element={<EducationPage />} />
         <Route path="/projects/eholdup" element={<EholdupPage />} />
         <Route path="/projects/surrey-density" element={<SurreyDensityPage />} />
         <Route path="/projects/green-timbers" element={<GreenTimbersPage />} />

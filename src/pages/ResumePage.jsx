@@ -17,8 +17,6 @@ export default function ResumePage() {
       <main className="resume-body">
         <section className="resume-main">
           <p className="resume-loc">{resume.location}</p>
-          <h2>Profile</h2>
-          <p className="resume-statement">{resume.statement}</p>
           <h2>Experience</h2>
           {resume.experience.map((x) => (
             <article key={x.role + x.org} className="job">

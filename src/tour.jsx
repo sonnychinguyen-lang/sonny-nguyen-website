@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { flatDocs } from './data.js'
 
-// The tour order is the stairs order: 14 steps across 6 projects.
+// The tour order is the stairs order: every step on the stairs, in order.
 export const steps = flatDocs.map((d) => ({ ...d, path: `${d.project.route}?tab=${d.tab}` }))
 export function currentStepIndex(pathname, search) {
   const tab = new URLSearchParams(search).get('tab')

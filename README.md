@@ -29,11 +29,12 @@ If you switch back to Netlify later, none of this needs removing — Netlify ign
 Everything under `public/data/` is generated from the coursework files by `pipeline.py` (kept in the repo root): UTM→WGS84 reprojection, the kernel-density grid, the Green Timbers buffer selection, the four explorer layers with burglary MO joined by file number, the Toronto MCI time series, and the compact dashboard rows. Re-run it with the source spreadsheets in `/uploads` to regenerate.
 
 ## Tour
-The stairs order is also a 14-step tour. On any project page the glass control at bottom-right (or the ← → keys) moves to the previous/next step; the front page has a "Start the tour" button. Each move plays a short shader wipe (`src/components/Transition.jsx`, plain GLSL on a react-three-fiber plane). Order and labels come from `src/data.js` → `stairs`.
+The stairs order is also the tour. On any project page the glass control at bottom-right (or the ← → keys) moves to the previous/next step; the front page has a "Start the tour" button. Each move plays a short shader wipe (`src/components/Transition.jsx`, plain GLSL on a react-three-fiber plane). Order and labels come from `src/data.js` → `stairs`.
 
 ## Pages
 - `/` — the stairs. 12 slabs = 12 documents across 4 projects. Hover previews, click opens, scroll/Tab cycles stacked slabs.
-- `/resume` — generalized resume + contact form. Content in `src/data/resume.js`; the PDF in `public/files/` is generated from the same file (`scripts` note below).
+- `/education` — teaching (where and what I teach) and studies (BCIT, UFV, certifications). Content in `src/data/resume.js` (`teaching`, `studies`, `certifications`). It is also the first two steps on the stairs.
+- `/resume` — general resume. Content in `src/data/resume.js`; the PDF in `public/files/` is generated from the same file by `scripts/resume_pdf.py` (the command is at the top of that script).
 - `/projects/eholdup` — 3D map of the robbery series (deck.gl over MapLibre), the people chart (3d-force-graph with 3D figures; click a figure for its profile and timeline), phone network with full numbers, the timeline as a reflective 3D gallery, report.
 - `/projects/surrey-density` — density as extruded columns vs. 3D buildings + terrain, with a toggle; Jan–Apr / May–Aug / net change tabs.
 - `/projects/green-timbers` — 800 m buffer map with offences by type.
@@ -44,7 +45,7 @@ The stairs order is also a 14-step tour. On any project page the glass control a
 ## Where to edit
 - `src/data.js` — project titles, labels, summaries, and which 12 slabs appear on the stairs.
 - `src/data/eholdup.js`, `src/data/mosspark.js`, `src/data/synth.js` — the numbers and points behind each page. Replace the synthesized Surrey/Green Timbers data with real exports when you find them.
-- `src/data/resume.js` — resume text. Regenerate the PDF after editing (the generator script is in the chat where this was built; any reportlab script reading this file works).
+- `src/data/resume.js` — resume and Education page text. Regenerate the PDF after editing with `scripts/resume_pdf.py`.
 - `src/components/MapView.jsx` — basemap style (OpenFreeMap, keyless), 3D buildings, terrain.
 - `src/Background.jsx` — ShaderGradient colours/speed.
 

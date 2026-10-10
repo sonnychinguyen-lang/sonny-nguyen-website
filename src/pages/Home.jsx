@@ -45,12 +45,12 @@ export default function Home() {
             ))}
             <Link className="menu-item" to="/resume">
               <span className="menu-index">Resume</span>
-              <span className="menu-title">Career history &amp; profile</span>
-              <span className="menu-kicker">Plus a contact form</span>
+              <span className="menu-title">Work history &amp; skills</span>
+              <span className="menu-kicker">With a PDF to download</span>
             </Link>
             <div className="menu-about">
               <div className="menu-index">About</div>
-              <p>K–7 educator and BCIT forensic investigations student, building toward criminal intelligence analysis. The projects are coursework: scenarios and datasets are training material, not live files.</p>
+              <p>K–7 English teacher in Richmond, BC, with a criminal justice degree and forensic investigations coursework at BCIT. The analysis projects are coursework: scenarios and datasets are training material, not live files.</p>
             </div>
           </div>
         </nav>
