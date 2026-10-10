@@ -16,6 +16,7 @@ export const projects = [
       { title: 'People chart', sub: 'Crew, vehicles, devices, organizations · click a figure', tab: 'network' },
       { title: 'Phone network', sub: 'Call-record links between two handsets', tab: 'phones' },
       { title: 'Timeline portals', sub: 'Eighteen events · step inside each one', tab: 'timeline' },
+      { title: 'Intelligence report', sub: 'The 11-page written product', tab: 'report' },
     ] },
   { id: 'surrey-density', index: '04', route: '/projects/surrey-density', title: 'Surrey crime density', kicker: 'Hotspot and change detection', course: 'BCIT · FSCT 8434', tools: ['ArcGIS', 'Kernel density estimation'], period: '2020 data', label: 'Training dataset · 37,159 offences · Surrey geography',
     summary: 'Kernel density surfaces for two four-month periods computed from the full offence file for the training jurisdiction ("Caper Crossroads" — Surrey geography under a placeholder name), then a change surface, period two minus period one. Rebuilt here from the raw points as extruded columns over a 3D map.',

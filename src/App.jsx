@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { TourProvider, useTour } from './tour.jsx'
 import Transition from './components/Transition.jsx'
 import Home from './pages/Home.jsx'
@@ -30,7 +30,7 @@ export default function App() {
         <Route path="/projects/moss-park" element={<MossParkPage />} />
         <Route path="/projects/caper" element={<CaperPage />} />
         <Route path="/projects/dashboard" element={<DashboardPage />} />
-        <Route path="/personal" element={<PersonalPage />} />
+        <Route path="/personal" element={<Navigate to="/projects/personal?tab=photos" replace />} />
         <Route path="/projects/personal" element={<PersonalPage />} />
         <Route path="*" element={<Home />} />
       </Routes>

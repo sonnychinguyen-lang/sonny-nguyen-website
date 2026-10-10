@@ -19,7 +19,7 @@ export default function StepNav() {
       <button className="glass round" disabled={!prev} onClick={() => prev && go(prev.path)} aria-label="Previous step">‹</button>
       <div className="glass pill">
         <span className="stepnav-count">{index + 1} / {total}</span>
-        <span className="stepnav-next">{next ? <>Next · <b>{next.project.id !== steps[index].project.id ? next.project.title + ' — ' : ''}{next.title}</b></> : 'End of tour'}</span>
+        <span className="stepnav-next">{next ? <>Next · <b>{next.project.id !== steps[index].project.id && next.project.title !== next.title ? next.project.title + ' — ' : ''}{next.title}</b></> : 'End of tour'}</span>
       </div>
       <button className="glass round big" disabled={!next} onClick={() => next && go(next.path)} aria-label="Next step">›</button>
     </div>
