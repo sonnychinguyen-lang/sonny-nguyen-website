@@ -34,6 +34,7 @@ The stairs order is also the tour. On any project page the glass control at bott
 ## Pages
 - `/` — the stairs. 12 slabs = 12 documents across 4 projects. Hover previews, click opens, scroll/Tab cycles stacked slabs.
 - `/education` — teaching (where and what I teach) and studies (BCIT, UFV, certifications). Content in `src/data/resume.js` (`teaching`, `studies`, `certifications`). It is also the first two steps on the stairs.
+- `/projects/classroom` — student dashboard: groups, weekly 1–4 marks, monthly tests, per-student status. **Sample data only**, generated in `src/data/classroom.js`; never put real student records in this public repo.
 - `/resume` — general resume. Content in `src/data/resume.js`; the PDF in `public/files/` is generated from the same file by `scripts/resume_pdf.py` (the command is at the top of that script).
 - `/projects/eholdup` — 3D map of the robbery series (deck.gl over MapLibre), the people chart (3d-force-graph with 3D figures; click a figure for its profile and timeline), phone network with full numbers, the timeline as a reflective 3D gallery, report.
 - `/projects/surrey-density` — density as extruded columns vs. 3D buildings + terrain, with a toggle; Jan–Apr / May–Aug / net change tabs.

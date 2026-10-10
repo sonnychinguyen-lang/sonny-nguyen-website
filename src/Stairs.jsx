@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { CycleRaycast, BakeShadows, useCursor, Html, OrbitControls } from '@react-three/drei'
 import { flatDocs } from './data.js'
 
-const TINTS = ['#ffffff', '#e6f2f5', '#f4efe6', '#eef1e6', '#f0ece6', '#e8f0ea', '#f2e9ef', '#e9eef4']
+const TINTS = ['#ffffff', '#e6f2f5', '#f4efe6', '#eef1e6', '#f0ece6', '#e8f0ea', '#f2e9ef', '#e9eef4', '#eef0e2']
 
 export default function Stairs({ onOpen, popupIdx, onHover, onUnhover, onStatus }) {
   return (
