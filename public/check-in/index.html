@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>K-12 English Check-In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2E8D5;
+    --paper-light: #FBF7EC;
+    --ink: #202A2E;
+    --ink-soft: #55625F;
+    --pine: #2F6F4E;
+    --pine-dark: #1F3D33;
+    --pencil: #B23A2E;
+    --pencil-light: #F3DAD3;
+    --line: #D9CCA6;
+    --focus: #1F6FEB;
+    --radius: 10px;
+    color-scheme: light;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --paper: #1B1E19;
+      --paper-light: #23271F;
+      --ink: #ECE5D5;
+      --ink-soft: #B4AC98;
+      --pine: #6FCF97;
+      --pine-dark: #0F1A15;
+      --pencil: #E0897C;
+      --pencil-light: #3A2420;
+      --line: #3A3F33;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1B1E19;
+    --paper-light: #23271F;
+    --ink: #ECE5D5;
+    --ink-soft: #B4AC98;
+    --pine: #6FCF97;
+    --pine-dark: #0F1A15;
+    --pencil: #E0897C;
+    --pencil-light: #3A2420;
+    --line: #3A3F33;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; margin: 0 0 .4em; color: var(--ink); }
+  p { margin: 0 0 1em; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+  .topbar {
+    background: var(--pine-dark);
+    color: var(--paper-light);
+    padding: env(safe-area-inset-top, 0px) 0 0 0;
+  }
+  .topbar-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 18px 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar-inner h1 { color: var(--paper-light); font-size: 1.25rem; margin: 0; }
+  .topbar-sub { font-size: .82rem; opacity: .78; font-family: "Atkinson Hyperlegible", sans-serif; }
+
+  main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .card {
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 26px;
+  }
+
+  .progress-row { display: flex; gap: 6px; margin-bottom: 22px; }
+  .progress-tab {
+    flex: 1;
+    text-align: center;
+    font-size: .78rem;
+    padding: 8px 4px;
+    border-bottom: 3px solid var(--line);
+    color: var(--ink-soft);
+  }
+  .progress-tab.is-active { border-bottom-color: var(--pencil); color: var(--ink); font-weight: 700; }
+  .progress-tab.is-done { border-bottom-color: var(--pine); color: var(--ink); }
+
+  label.field-label { display: block; font-weight: 700; margin-bottom: 6px; }
+  input[type="text"], textarea, select {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  textarea { min-height: 140px; resize: vertical; line-height: 1.6; }
+  textarea.short-answer { min-height: 80px; }
+  select { min-height: 44px; }
+
+  .question { margin-bottom: 26px; }
+  .question:last-child { margin-bottom: 0; }
+  .question-prompt { font-weight: 700; margin-bottom: 10px; }
+  .options { display: grid; gap: 8px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--paper);
+  }
+  .option:has(input:checked) { border-color: var(--pine); background: color-mix(in srgb, var(--pine) 12%, var(--paper)); }
+  .option input { accent-color: var(--pine); width: 18px; height: 18px; flex-shrink: 0; }
+  .short-tag { display: inline-block; font-size: .72rem; font-weight: 700; color: var(--pencil); border: 1px solid var(--pencil); border-radius: 20px; padding: 1px 9px; margin-bottom: 8px; }
+
+  .passage {
+    background: var(--paper);
+    border-left: 4px solid var(--pencil);
+    padding: 16px 18px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    font-size: .98rem;
+  }
+  .passage h3 { font-size: 1.05rem; margin-bottom: .5em; }
+
+  .btn-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+  button {
+    font-family: inherit;
+    font-size: .98rem;
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--pine-dark); color: var(--paper-light); margin-left: auto; }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-ghost:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-ai { background: var(--pencil); color: var(--paper-light); }
+  .btn-ai:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-small { padding: 8px 14px; font-size: .85rem; }
+
+  .notice { font-size: .88rem; color: var(--pencil); margin-top: 10px; min-height: 1.2em; }
+  .hint { font-size: .85rem; color: var(--ink-soft); margin-top: -8px; margin-bottom: 18px; }
+
+  .landing-title { font-size: 1.7rem; }
+  .section-list { list-style: none; padding: 0; margin: 18px 0 26px; display: grid; gap: 8px; }
+  .section-list li { padding: 10px 4px; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-size: .95rem; }
+  .section-list li b { color: var(--ink); }
+
+  .complete-mark { width: 56px; height: 56px; border-radius: 50%; background: var(--pine); color: var(--paper-light); display: flex; align-items: center; justify-content: center; font-family: "Fraunces", serif; font-size: 1.6rem; margin-bottom: 16px; }
+
+  .teacher-link { text-align: center; margin-top: 30px; }
+  .teacher-link a { color: var(--ink-soft); font-size: .82rem; text-decoration: underline; cursor: pointer; }
+
+  .sub-item {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .sub-head {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .sub-head:hover { background: color-mix(in srgb, var(--pine) 6%, var(--paper)); }
+  .sub-name { font-weight: 700; }
+  .sub-date { font-size: .8rem; color: var(--ink-soft); }
+  .sub-scores { font-size: .82rem; color: var(--ink-soft); text-align: right; }
+  .sub-body { padding: 0 16px 18px; border-top: 1px solid var(--line); }
+  .detail-q { padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: .92rem; }
+  .detail-q:last-child { border-bottom: none; }
+  .tag-correct { color: var(--pine); font-weight: 700; }
+  .tag-wrong { color: var(--pencil); font-weight: 700; }
+  .writing-block { background: var(--paper-light); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 10px 0; white-space: pre-wrap; font-size: .95rem; }
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--ink-soft); }
+  .save-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .save-status { font-size: .82rem; color: var(--pine); }
+  .grade-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .grade-row select { width: auto; min-width: 190px; padding: 8px 10px; }
+  .ai-note { font-size: .85rem; color: var(--ink-soft); font-style: italic; margin-top: 4px; }
+  .field-inline { margin-top: 14px; }
+    
+  .muted { color: var(--ink-soft); }
+  .small { font-size: .82rem; }
+  .ok-line { color: var(--pine); font-weight: 700; }
+  .err-line { color: var(--pencil); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+  .bonus-flag { display: inline-block; font-weight: 700; color: var(--pencil); border: 1px solid var(--pencil); border-radius: 20px; padding: 4px 14px; margin-bottom: 10px; font-size: .85rem; }
+  .bonus-intro { color: var(--ink-soft); font-size: .88rem; margin-bottom: 18px; }
+  .passage-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .listen-btn { font-size: .75rem; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--line); background: var(--paper-light); color: var(--ink); font-weight: 700; vertical-align: middle; cursor: pointer; }
+  .teacher-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .filter { margin-top: 14px; }
+  .sub-scores div { white-space: nowrap; }
+  @media (max-width: 560px) { .sub-head { flex-direction: column; align-items: flex-start; } .sub-scores { text-align: left; } .sub-scores div { white-space: normal; } }
+  .profile { background: var(--paper-light); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 14px 0 8px; }
+  .profile-title { font-weight: 700; font-size: .88rem; margin-bottom: 8px; }
+  .pill { display: inline-block; border: 1px solid var(--pine); color: var(--ink); border-radius: 20px; padding: 2px 10px; font-size: .8rem; margin: 0 6px 6px 0; }
+  .detail-h { font-size: 1rem; margin-top: 16px; }
+  .align { margin-top: 18px; }
+  .align summary { cursor: pointer; font-weight: 700; font-family: "Fraunces", Georgia, serif; }
+  .align-row { font-size: .85rem; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+  .align hr { border: none; border-top: 1px solid var(--line); margin: 12px 0; }
+  .bulk-row { margin-top: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .badge { display: inline-block; font-size: .7rem; font-weight: 700; border: 1px solid var(--pencil); color: var(--pencil); border-radius: 20px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
+  .badge-ok { border-color: var(--pine); color: var(--pine); }
+  .badge-muted { border-color: var(--line); color: var(--ink-soft); }
+  .ai-banner { background: var(--pencil-light); border-radius: 8px; padding: 10px 12px; font-size: .88rem; margin: 12px 0 4px; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--pine); border-radius: 50%; display: inline-block; animation: spin .8s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .focus-list { margin: 0 0 12px 1.1em; padding: 0; }
+  .focus-list li { margin-bottom: 4px; }
+  .check-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: .92rem; cursor: pointer; }
+  .check-row input { width: 18px; height: 18px; accent-color: var(--pine); }
+  .result-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .result-table td { padding: 5px 0; border-bottom: 1px dashed var(--line); vertical-align: top; }
+  .result-table td:last-child { text-align: right; font-weight: 700; padding-left: 10px; }
+  .criteria { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: -2px 0 8px; color: var(--ink-soft); }
+  .btn-link { background: none; border: none; padding: 4px 0; margin-left: auto; color: var(--pencil); font-size: .8rem; font-weight: 400; text-decoration: underline; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <h1>English Check-In</h1>
+    <span class="topbar-sub" id="topbarSub">K–12 · ELL</span>
+  </div>
+</div>
+<main id="app"></main>
+<form name="english-check-in" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="student">
+  <input type="text" name="level">
+  <input type="text" name="scores">
+  <textarea name="summary"></textarea>
+  <input type="text" name="record">
+  <input type="text" name="bot-field">
+</form>
+<script>
+(function () {
+  "use strict";
+  // ================= CONTENT =================
+  function mc(id, prompt, options, correct) { return { id: id, type: "mc", prompt: prompt, options: options, correct: correct }; }
+  function sa(id, prompt) { return { id: id, type: "short", prompt: prompt }; }
+
+  const SETS = {
+    k: {
+      key: "k", label: "Kindergarten", short: "K", band: "k", readAloud: true,
+      focus: "Phonological awareness (rhyme, initial sounds), letter knowledge, concepts of print, simple story elements",
+      spelling: [
+        mc("s1", "Which letter does the word \u201ccat\u201d start with?", ["c", "b", "s"], 0),
+        mc("s2", "Which word rhymes with \u201chat\u201d?", ["cat", "dog", "sun"], 0),
+        mc("s3", "Which word rhymes with \u201cpig\u201d?", ["big", "pen", "cup"], 0),
+        mc("s4", "Which letter does the word \u201csun\u201d start with?", ["m", "s", "t"], 1),
+        mc("s5", "Which word starts with the same sound as \u201cball\u201d?", ["bat", "fish", "ten"], 0)
+      ],
+      grammar: [
+        mc("g1", "How many words are in this sentence? \u201cI see a dog.\u201d", ["3", "4", "5"], 1),
+        mc("g2", "Which one is a capital letter?", ["a", "A", "b"], 1),
+        mc("g3", "What goes at the end of a telling sentence?", ["a period (.)", "a comma (,)", "nothing"], 0),
+        mc("g4", "Which word is the name of an animal?", ["cat", "run", "big"], 0),
+        mc("g5", "Which one is a sentence?", ["The dog runs.", "dog the", "runs"], 0)
+      ],
+      reading: {
+        title: "Sam\u2019s Red Ball",
+        text: "Sam has a red ball. He kicks the ball to his mom. The ball goes up, up, up! Mom catches the ball. Sam and Mom laugh.",
+        items: [
+          mc("r1", "What colour is Sam\u2019s ball?", ["red", "blue", "green"], 0),
+          mc("r2", "Who catches the ball?", ["Sam", "Mom", "a dog"], 1),
+          mc("r3", "How do Sam and Mom feel at the end?", ["happy", "sad", "angry"], 0),
+          sa("rs1", "What happened after Sam kicked the ball? (Your teacher can type for you.)")
+        ]
+      },
+      writing: { prompt: "Type one sentence about your favourite animal. (Your teacher can type what you say.)", min: 5 }
+    },
+
+    g1: {
+      key: "g1", label: "Grade 1", short: "G1", band: "primary", readAloud: true,
+      focus: "Phonics and word patterns, simple plurals, capitals and end punctuation, nouns and verbs, retelling and recall",
+      spelling: [
+        mc("s1", "Which word is spelled correctly?", ["frog", "frogg", "frug"], 0),
+        mc("s2", "Which word is spelled correctly?", ["teh", "the", "tha"], 1),
+        mc("s3", "Fill in the missing letter: f _ sh (it swims in water)", ["i", "a", "u"], 0),
+        mc("s4", "Which word has the long \u201ca\u201d sound, like in \u201ccake\u201d?", ["cap", "made", "cat"], 1),
+        mc("s5", "One dog, two ___.", ["dog", "dogs", "doges"], 1)
+      ],
+      grammar: [
+        mc("g1", "Which sentence starts correctly?", ["the cat sat.", "The cat sat.", "the Cat sat."], 1),
+        mc("g2", "Which word is a naming word (noun)?", ["jump", "tree", "happy"], 1),
+        mc("g3", "Which word is an action word (verb)?", ["run", "red", "box"], 0),
+        mc("g4", "What goes at the end of a question?", ["a period (.)", "a question mark (?)", "an exclamation mark (!)"], 1),
+        mc("g5", "\u201cMy friend emma likes pizza.\u201d Which word needs a capital letter?", ["friend", "emma", "pizza"], 1)
+      ],
+      reading: {
+        title: "The Lost Mitten",
+        text: "Ava lost her blue mitten at the park. She looked under the slide. She looked by the swings. Then her dog, Max, ran to her. Max had the mitten in his mouth! Ava gave Max a big hug.",
+        items: [
+          mc("r1", "What did Ava lose?", ["a hat", "a blue mitten", "a ball"], 1),
+          mc("r2", "Where did Ava look first?", ["under the slide", "by the swings", "at home"], 0),
+          mc("r3", "Who found the mitten?", ["Ava\u2019s mom", "Max the dog", "a friend"], 1),
+          sa("rs1", "Why did Ava give Max a hug?")
+        ]
+      },
+      writing: { prompt: "Write 2 or 3 sentences about something you like to do with your family.", min: 15 }
+    },
+
+    g2: {
+      key: "g2", label: "Grade 2", short: "G2", band: "primary", readAloud: true,
+      focus: "High-frequency words, homophones, -ing endings, compound words, adjectives, past tense, subject-verb agreement, sequence words in informational text",
+      spelling: [
+        mc("s1", "Which word is spelled correctly?", ["frend", "friend", "freind"], 1),
+        mc("s2", "Which word is spelled correctly?", ["whent", "went", "wint"], 1),
+        mc("s3", "Choose the right word: \u201cI ___ two apples.\u201d", ["ate", "eight", "eigth"], 0),
+        mc("s4", "run + ing =", ["runing", "running", "runeing"], 1),
+        mc("s5", "Which word is a compound word (two words put together)?", ["sunshine", "sunny", "running"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which word is the describing word (adjective)? \u201cThe fluffy cat slept.\u201d", ["fluffy", "cat", "slept"], 0),
+        mc("g2", "\u201cYesterday I ___ to the park.\u201d", ["walk", "walked", "walking"], 1),
+        mc("g3", "Which one is a complete sentence?", ["The bird.", "The bird sang a song.", "Sang a song."], 1),
+        mc("g4", "\u201cMia and Leo ___ friends.\u201d", ["is", "are", "am"], 1),
+        mc("g5", "Which word means the opposite of \u201chot\u201d?", ["warm", "cold", "sunny"], 1)
+      ],
+      reading: {
+        title: "A Seed\u2019s Journey",
+        text: "A seed is very small, but it can grow into a big plant. First, the seed is planted in soil. Next, it needs water and sunlight. Soon, a tiny root grows down and a green shoot grows up. After many weeks, the shoot becomes a plant with leaves. Some plants even grow flowers and new seeds!",
+        items: [
+          mc("r1", "What does a seed need to grow?", ["water and sunlight", "snow and wind", "nothing"], 0),
+          mc("r2", "What grows down into the soil?", ["a leaf", "a root", "a flower"], 1),
+          mc("r3", "The words \u201cFirst\u201d and \u201cNext\u201d help the reader know\u2026", ["the order things happen", "how big the seed is", "what colour the plant is"], 0),
+          sa("rs1", "In your own words, how does a seed become a plant?")
+        ]
+      },
+      writing: { prompt: "Write 3 or 4 sentences explaining how to do something you know well (like making a sandwich). Use the words first, next, and last.", min: 25 }
+    },
+
+    g3: {
+      key: "g3", label: "Grade 3", short: "G3", band: "primary", readAloud: false,
+      focus: "Common spelling patterns, plurals (y to ies), prefixes, adverbs, possessives, contractions, sentence types, character feelings and inference",
+      spelling: [
+        mc("s1", "Which word is spelled correctly?", ["afraid", "afrayd", "afriad"], 0),
+        mc("s2", "Which word is spelled correctly?", ["minite", "minute", "minnit"], 1),
+        mc("s3", "Choose the right word: \u201cCan you ___ the music?\u201d", ["here", "hear", "heer"], 1),
+        mc("s4", "One baby, two ___.", ["babys", "babies", "babyes"], 1),
+        mc("s5", "Which word has a prefix that means \u201cagain\u201d?", ["redo", "read", "ready"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which word is the adverb (tells how)? \u201cThe turtle walked slowly.\u201d", ["turtle", "walked", "slowly"], 2),
+        mc("g2", "Which shows that the bone belongs to one dog?", ["the dogs bone", "the dog\u2019s bone", "the dogs\u2019 bone"], 1),
+        mc("g3", "\u201cThe children ___ playing outside.\u201d", ["is", "are", "am"], 1),
+        mc("g4", "Which is the contraction for \u201cdo not\u201d?", ["dont", "don\u2019t", "do\u2019nt"], 1),
+        mc("g5", "Which sentence is a question?", ["Close the door.", "Where is my coat?", "What a great day!"], 1)
+      ],
+      reading: {
+        title: "Lena\u2019s Science Fair",
+        text: "Lena wanted her science fair project to be special. She decided to test which paper towel soaked up the most water. She poured the same amount of water on three different towels. Then she measured how much water was left over. The thick towel soaked up almost all of it. The thin towel barely helped at all.\n\nOn the day of the fair, Lena was nervous. Her hands shook, but she explained her results clearly. A judge smiled and said, \u201cYou tested it fairly. That is what real scientists do.\u201d",
+        items: [
+          mc("r1", "What was Lena testing?", ["which paper towel soaked up the most water", "which towel was softest", "how fast water dries"], 0),
+          mc("r2", "Which towel worked best?", ["the thin one", "the thick one", "they were all the same"], 1),
+          mc("r3", "Why did Lena use the same amount of water each time?", ["to make the test fair", "because she ran out of water", "because it was faster"], 0),
+          sa("rs1", "How did Lena feel at the start of the fair, and how do you think she felt at the end? Explain.")
+        ]
+      },
+      writing: { prompt: "Write a paragraph about a time you tried something for the first time. Tell what happened and how you felt.", min: 40 }
+    },
+
+    g4: {
+      key: "g4", label: "Grade 4", short: "G4", band: "intermediate", readAloud: false,
+      focus: "Canadian spelling, homophones, irregular plurals, parts of speech, verb tense, punctuation, its/it\u2019s, literal and inferential comprehension, paragraph writing",
+      spelling: [
+        mc("sp1", "Which word is spelled correctly?", ["Becuase", "Beacause", "Because", "Becaus"], 2),
+        mc("sp2", "Which word is spelled correctly?", ["Diffrent", "Different", "Differant", "Differnt"], 1),
+        mc("sp3", "Choose the correct plural: one box, two ___.", ["boxs", "boxes", "boxies", "box's"], 1),
+        mc("sp4", "Choose the correct word: \u201c___ going to the park after school.\u201d", ["Their", "There", "They're"], 2),
+        mc("sp5", "Choose the correct word: \u201cPut your backpack over ___.\u201d", ["their", "there", "they're"], 1),
+        mc("sp6", "Which word is spelled correctly (Canadian spelling)?", ["Color", "Colour", "Collor", "Coller"], 1),
+        mc("sp7", "Choose the correct plural: one child, many ___.", ["childs", "childes", "children", "childrens"], 2),
+        mc("sp8", "Which word is spelled correctly?", ["Beautifull", "Beatiful", "Beautiful", "Beutiful"], 2)
+      ],
+      grammar: [
+        mc("gr1", "Which word in this sentence is the noun?\n\u201cThe dog ran quickly across the field.\u201d", ["dog", "ran", "quickly", "across"], 0),
+        mc("gr2", "Which word in this sentence is the verb?\n\u201cMaya sings a song every morning.\u201d", ["Maya", "sings", "song", "every"], 1),
+        mc("gr3", "Which word in this sentence is the adjective?\n\u201cThe bright red kite soared above the trees.\u201d", ["bright", "soared", "above", "trees"], 0),
+        mc("gr4", "Which sentence uses the correct verb tense?", ["Yesterday, I walk to school.", "Yesterday, I walked to school.", "Yesterday, I will walk to school."], 1),
+        mc("gr5", "Which sentence is punctuated correctly?", ["Can you help me.", "Can you help me?", "Can you help me!"], 1),
+        mc("gr6", "Choose the correct word: \u201c___ backpack is on the chair.\u201d", ["Its", "It's", "Its'"], 0),
+        mc("gr7", "Which one is a complete sentence?", ["Running through the park.", "The children ran through the park.", "Through the park."], 1),
+        mc("gr8", "Which sentence is punctuated correctly?", ["I have a dog a cat and a fish.", "I have a dog, a cat, and a fish.", "I have a dog a cat, and a fish."], 1)
+      ],
+      reading: {
+        title: "The Community Garden",
+        text: "Every Saturday morning, Malia and her grandfather walked three blocks to the community garden. The garden had twenty small plots. Neighbours grew vegetables, flowers, and herbs there. Malia's grandfather had grown tomatoes in his plot for ten years. This summer, he decided to teach Malia how to garden too.\n\nAt first, Malia found the work difficult. She didn't like getting dirt under her fingernails. She also worried the plants would not grow. Her grandfather told her that patience was the most important tool a gardener could have. He showed her how to loosen the soil and plant the seeds at the right depth. Then he showed her how to water them gently every day.\n\nThree weeks later, Malia noticed tiny green shoots poking through the soil. She was so excited that she ran all the way home to tell her mother. By the end of summer, Malia's plot was full of bright orange carrots and tall sunflowers. She realized her grandfather had been right about patience all along.",
+        items: [
+          mc("rc1", "Where did Malia and her grandfather go every Saturday?", ["The library", "The community garden", "The grocery store", "The park"], 1),
+          mc("rc2", "How long had Malia's grandfather been growing tomatoes in his plot?", ["Three weeks", "One summer", "Ten years", "Twenty years"], 2),
+          mc("rc3", "What did Malia's grandfather say was the most important tool for a gardener?", ["A shovel", "Patience", "Water", "Seeds"], 1),
+          sa("rc4", "In your own words, why was Malia excited three weeks after planting?"),
+          sa("rc5", "What can you tell about how Malia felt about gardening by the end of the story? Use details from the text to explain your answer.")
+        ]
+      },
+      writing: { prompt: "Write a paragraph (4 to 6 sentences) about a time you learned something new, like Malia did in the story. What did you learn, and how did you feel before and after? Try to include a beginning, a middle, and an end.", min: 10 }
+    },
+
+    g5: {
+      key: "g5", label: "Grade 5", short: "G5", band: "intermediate", readAloud: false,
+      focus: "Canadian spelling, affect/effect, suffixes, subject-verb agreement, dialogue punctuation, prepositions, title capitals, compound sentences, perspective and character change, opinion paragraphs",
+      spelling: [
+        mc("s1", "Which word is spelled correctly (Canadian spelling)?", ["neighbourhood", "neighborhood", "nieghbourhood"], 0),
+        mc("s2", "Which word is spelled correctly?", ["recieve", "receive", "receeve"], 1),
+        mc("s3", "\u201cThe storm will ___ the picnic.\u201d", ["affect", "effect", "afect"], 0),
+        mc("s4", "Which suffix turns \u201cenjoy\u201d into a word meaning \u201cable to be enjoyed\u201d?", ["-ment", "-able", "-ful"], 1),
+        mc("s5", "One wolf, two ___.", ["wolfs", "wolves", "wolfes"], 1)
+      ],
+      grammar: [
+        mc("g1", "Which sentence has correct subject-verb agreement?", ["Each of the students have a book.", "Each of the students has a book.", "Each of the students are having a book."], 1),
+        mc("g2", "Which sentence uses quotation marks correctly?", ["\u201cI\u2019m hungry,\u201d said Raj.", "\u201cI\u2019m hungry\u201d, said Raj.", "I\u2019m hungry, \u201csaid Raj.\u201d"], 0),
+        mc("g3", "Which word is the preposition? \u201cThe keys were behind the couch.\u201d", ["keys", "were", "behind", "couch"], 2),
+        mc("g4", "Which book title is capitalized correctly?", ["a walk in the woods", "A Walk in the Woods", "A Walk In The Woods"], 1),
+        mc("g5", "Which is a compound sentence?", ["Jin likes soccer, and his sister likes hockey.", "Jin likes soccer and hockey.", "Jin, who likes soccer."], 0)
+      ],
+      reading: {
+        title: "Two Sides of the Fence",
+        text: "Mr. Patel had grown the same row of sunflowers along his fence for twenty years. Every August they stood taller than the garage, and the children on the street called them \u201cthe giants.\u201d This summer, the new family next door, the Okafors, knocked on his door with a polite complaint. The tall flowers, they said, blocked the afternoon sun from their small vegetable garden.\n\nAt first, Mr. Patel was offended. To him, the sunflowers were not just plants. They were a tradition his late wife had started the year they moved in, and planting them each spring made him feel close to her. He closed the door more firmly than he meant to.\n\nThat evening, though, he could not stop thinking about it. He walked around to his neighbours\u2019 yard and looked over the fence from their side. Their tiny tomato plants were leaning toward the light, thin and pale, stretching for the sun his giants had taken.\n\nThe next weekend, Mr. Patel dug up half the sunflowers and replanted them in front of his house, where they caught the morning light. A week later, the Okafors brought him a basket of their first ripe tomatoes. Tucked inside was a drawing from their daughter: a row of sunflowers, labelled \u201cthe giants.\u201d",
+        items: [
+          mc("r1", "Why were the neighbours upset?", ["The sunflowers blocked sun from their garden", "The sunflowers smelled bad", "Mr. Patel was too loud"], 0),
+          mc("r2", "Why did the sunflowers matter so much to Mr. Patel?", ["They were a tradition his late wife started", "He sold them for money", "They won a prize"], 0),
+          mc("r3", "What changed Mr. Patel\u2019s mind?", ["Seeing the problem from his neighbours\u2019 yard", "A letter from the city", "The sunflowers died"], 0),
+          mc("r4", "In the story, the word \u201coffended\u201d most likely means\u2026", ["upset and hurt", "very tired", "proud", "confused"], 0),
+          sa("rs1", "How did Mr. Patel\u2019s view of the problem change? Use details from the text.")
+        ]
+      },
+      writing: { prompt: "Write an opinion paragraph: Should students have homework? State your opinion in a topic sentence and give at least two reasons.", min: 60 }
+    },
+
+    g6: {
+      key: "g6", label: "Grade 6", short: "G6", band: "intermediate", readAloud: false,
+      focus: "Roots and affixes, then/than, complex sentences, pronoun case, sentence types, consistent tense, plural possessives, main idea and author\u2019s purpose, persuasive writing",
+      spelling: [
+        mc("s1", "Which word is spelled correctly?", ["occassion", "occasion", "ocassion"], 1),
+        mc("s2", "Which word is spelled correctly?", ["embarrass", "embarass", "embaras"], 0),
+        mc("s3", "\u201cShe is taller ___ her brother.\u201d", ["then", "than", "that"], 1),
+        mc("s4", "The root \u201cport\u201d means \u201cto carry.\u201d Which word means \u201cable to be carried\u201d?", ["export", "portable", "report"], 1),
+        mc("s5", "In the word \u201cimpossible,\u201d which part means \u201cnot\u201d?", ["im-", "-ible", "poss"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which sentence contains a dependent clause?", ["Because it was raining, we stayed inside.", "We stayed inside.", "It rained. We stayed inside."], 0),
+        mc("g2", "\u201cBetween you and ___, this is a secret.\u201d", ["I", "me", "myself"], 1),
+        mc("g3", "What type of sentence is this? \u201cPlease hand in your work.\u201d", ["declarative", "interrogative", "imperative", "exclamatory"], 2),
+        mc("g4", "Which sentence keeps the verb tense consistent?", ["She opened the box and finds a note.", "She opened the box and found a note.", "She opens the box and found a note."], 1),
+        mc("g5", "In \u201cthe students\u2019 lockers,\u201d what does the apostrophe show?", ["one student owns the lockers", "more than one student owns the lockers", "it is a contraction"], 1)
+      ],
+      reading: {
+        title: "Bats: Misunderstood Night Workers",
+        text: "Many people think of bats as creepy, but scientists see them as some of the hardest workers in nature. Bats are the only mammals that can truly fly, and the bats of British Columbia hunt at night using echolocation: they make high-pitched sounds and listen for the echoes that bounce back from insects.\n\nA single little brown bat can eat hundreds of insects in an hour, including mosquitoes that bother campers and moths and beetles that damage crops and forests. Farmers benefit too, because fewer pests can mean less need for chemical sprays. In warmer parts of the world, some bats pollinate plants such as agave and bananas, or spread seeds that help forests regrow.\n\nSadly, bat populations in parts of North America have dropped sharply because of a disease called white-nose syndrome. It is caused by a fungus that grows on bats while they hibernate. Infected bats wake up too often during the winter and use up the fat they need to survive.\n\nResearchers in British Columbia are asking people to report bat sightings so they can track where healthy colonies remain. Some families even put up bat boxes, small wooden shelters mounted high on a wall or pole, to give bats a safe place to roost.",
+        items: [
+          mc("r1", "What is the main idea of this text?", ["Bats are helpful animals that need protection", "Bats are scary and should be avoided", "Bats only live in British Columbia"], 0),
+          mc("r2", "Why does the author mention mosquitoes and beetles?", ["To show how bats help people", "To describe what colour insects are", "To warn people about camping"], 0),
+          mc("r3", "What is the author\u2019s main purpose?", ["To inform readers and convince them bats are worth protecting", "To tell a funny story", "To explain how to build a bat house"], 0),
+          mc("r4", "In this text, \u201cecholocation\u201d means\u2026", ["finding things by listening to the echoes of sounds", "flying together in large groups", "sleeping through the winter", "seeing well in the dark"], 0),
+          sa("rs1", "According to the text, what can people in BC do to help bats? Why does it matter?")
+        ]
+      },
+      writing: { prompt: "Write a persuasive paragraph convincing your school to start a new club or activity. Include a clear claim, two reasons with details, and a concluding sentence.", min: 70 }
+    },
+
+    g7: {
+      key: "g7", label: "Grade 7", short: "G7", band: "intermediate", readAloud: false,
+      focus: "Greek and Latin roots, commonly confused words, semicolons and colons, modifiers, active voice, agreement with neither/nor, context clues, theme and symbolism, narrative with dialogue",
+      spelling: [
+        mc("s1", "Which word is spelled correctly?", ["accommodate", "accomodate", "acommodate"], 0),
+        mc("s2", "Which word is spelled correctly?", ["conscience", "concience", "conshience"], 0),
+        mc("s3", "\u201cThe ___ spoke at the school assembly.\u201d", ["principle", "principal", "princable"], 1),
+        mc("s4", "The Greek root \u201cgraph\u201d means \u201cwrite.\u201d What is a \u201cbiography\u201d?", ["A written account of someone\u2019s life", "A picture of nature", "A type of map"], 0),
+        mc("s5", "Which word is spelled correctly?", ["truely", "truly", "trully"], 1)
+      ],
+      grammar: [
+        mc("g1", "Which sentence uses a semicolon correctly?", ["I love to read; my brother prefers video games.", "I love to read; and my brother prefers video games.", "I love; to read."], 0),
+        mc("g2", "Which sentence has a misplaced modifier?", ["Running to the bus, Ava dropped her lunch.", "Covered in ketchup, Ava ate the hot dog.", "Ava dropped her lunch while running to the bus."], 1),
+        mc("g3", "Which sentence is in the active voice?", ["The ball was thrown by Ming.", "Ming threw the ball.", "The ball had been thrown."], 1),
+        mc("g4", "\u201cNeither the coach nor the players ___ ready.\u201d", ["was", "were", "is"], 1),
+        mc("g5", "Which sentence uses a colon correctly?", ["Bring three things: a pencil, an eraser, and a ruler.", "Bring: a pencil, an eraser, and a ruler.", "Bring three things, a pencil: an eraser, and a ruler."], 0)
+      ],
+      reading: {
+        title: "The Island",
+        text: "Daniel slouched against the ferry railing, earbuds in, determined to hate every minute of the trip to his grandmother\u2019s island. His friends were spending the week at a skate camp in Vancouver. He was spending it somewhere with more deer than people. His phone had one bar of signal, then none. \u201cPerfect,\u201d he muttered.\n\nWhen the ferry slowed, a pod of orcas surfaced beside the ship, their black fins slicing the grey water. Passengers rushed to the rail, phones raised. Daniel pulled out one earbud, then the other. A small calf rose beside its mother, so close he could hear the hiss of its breath. When he finally looked away, he noticed his grandmother quietly watching him instead of the whales.\n\nNeither of them mentioned it at dinner. Later, on the walk up the hill to her cabin, she handed him an old notebook with a cracked cover: forty years of whale sightings, written in her careful handwriting. Dates, times, the shapes of dorsal fins sketched in pencil. He flipped to the end. The last page was blank.\n\n\u201cI was saving it,\u201d she said.\n\nDaniel looked at the page for a long moment. Then he asked if she had a pencil.",
+        items: [
+          mc("r1", "How does Daniel feel at the beginning of the story?", ["Unwilling and annoyed", "Excited", "Afraid of whales"], 0),
+          mc("r2", "In this story, \u201cslicing\u201d most likely means\u2026", ["cutting smoothly through", "damaging", "floating"], 0),
+          mc("r3", "Why might the grandmother have left the last page blank?", ["She hoped Daniel would continue the record", "She ran out of time", "She forgot about it"], 0),
+          mc("r4", "Why does the author include the detail that Daniel took out his earbuds?", ["To show he was starting to pay attention", "Because the music was too loud", "Because his phone battery died", "To show he was angry"], 0),
+          sa("rs1", "What is a theme of this story? Support your answer with two details.")
+        ]
+      },
+      writing: { prompt: "Write a short narrative (at least two paragraphs) about a character who changes their mind about something. Use dialogue at least once.", min: 120 }
+    },
+
+    g8: {
+      key: "g8", label: "Grade 8", short: "G8", band: "secondary", readAloud: false,
+      focus: "Academic vocabulary and context clues, comma splices, parallel structure, who/whom, complex sentences, argument and counterargument in informational text, multi-paragraph argument",
+      spelling: [
+        mc("s1", "Which word is spelled correctly?", ["millennium", "millenium", "milennium"], 0),
+        mc("s2", "\u201cThe ancient map was illegible.\u201d Illegible most likely means\u2026", ["impossible to read", "very old", "valuable"], 0),
+        mc("s3", "Which word is spelled correctly?", ["questionnaire", "questionaire", "questionnair"], 0),
+        mc("s4", "The Latin root \u201cbene\u201d means \u201cgood.\u201d Which word means \u201ca person who gives help or money\u201d?", ["benefactor", "malefactor", "manufacturer"], 0),
+        mc("s5", "\u201cI\u2019m ___ to admit I was wrong.\u201d (meaning: unwilling)", ["loath", "loathe", "lothe"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which sentence avoids a comma splice?", ["The game ended, we went home.", "The game ended, so we went home.", "The game ended, then we went home."], 1),
+        mc("g2", "Which sentence has parallel structure?", ["She likes hiking, swimming, and to bike.", "She likes hiking, swimming, and biking.", "She likes to hike, swimming, and biking."], 1),
+        mc("g3", "\u201cTo ___ should I send the letter?\u201d", ["who", "whom", "whose"], 1),
+        mc("g4", "What type of sentence is this? \u201cAlthough the trail was steep, we reached the summit before noon.\u201d", ["simple", "compound", "complex"], 2),
+        mc("g5", "Which sentence uses a dash correctly for emphasis?", ["There was only one thing left to do \u2014 run.", "There was only \u2014 one thing left to do run.", "There was \u2014 only one thing left to do, run."], 0)
+      ],
+      reading: {
+        title: "Should Schools Start Later?",
+        text: "Research on teenage sleep suggests that adolescents\u2019 body clocks shift later during puberty, making it hard for many teens to fall asleep before 11 p.m. Health organizations generally recommend that teenagers get about eight to ten hours of sleep a night. Yet many secondary schools begin classes before 8:30 a.m., which means a student who falls asleep at eleven may have to get up before seven.\n\nSupporters of later start times argue that more sleep could improve attendance, mood, and grades. They point out that a tired student is not necessarily a lazy one; biology, not willpower, may be the problem. Some also argue that drowsy teenage drivers are a safety risk on early-morning roads.\n\nCritics point out that later start times can complicate bus schedules, especially in districts where the same buses serve both elementary and secondary schools. A later dismissal can also cut into after-school jobs, sports practices, and family responsibilities such as picking up younger siblings.\n\nSome districts that have experimented with later starts report fewer late arrivals and slightly better attendance, though results vary from school to school. Because the evidence is mixed, many communities are still debating whether the benefits are worth the costs.",
+        items: [
+          mc("r1", "Which statement from the text is a counterargument?", ["Later start times can complicate bus schedules", "Teens\u2019 body clocks shift later during puberty", "More sleep could improve mood"], 0),
+          mc("r2", "In this text, \u201cadolescents\u201d means\u2026", ["teenagers", "teachers", "parents"], 0),
+          mc("r3", "What does \u201cresults vary from school to school\u201d suggest about the evidence?", ["It is not the same everywhere", "It has been completely proven", "It is made up"], 0),
+          mc("r4", "In paragraph 3, \u201ccomplicate\u201d most nearly means\u2026", ["make more difficult", "make cheaper", "cancel", "explain"], 0),
+          sa("rs1", "Should your school start later? Use evidence from the passage and respond to one counterargument.")
+        ]
+      },
+      writing: { prompt: "Write a multi-paragraph argument (introduction with a thesis, body paragraphs, conclusion): Should cellphones be allowed in classrooms?", min: 150 }
+    },
+
+    g9: {
+      key: "g9", label: "Grade 9", short: "G9", band: "secondary", readAloud: false,
+      focus: "Precise vocabulary, whose/who\u2019s, appositives, subjunctive mood, agreement errors, integrating quotations, symbolism and implied meaning, literary analysis",
+      spelling: [
+        mc("s1", "\u201cHer argument was cogent, so the class was convinced.\u201d Cogent means\u2026", ["clear and convincing", "rude", "confusing"], 0),
+        mc("s2", "Which word is spelled correctly?", ["conscientious", "consciencious", "conscientous"], 0),
+        mc("s3", "Which word means \u201cto make something less severe\u201d?", ["mitigate", "militate", "meditate"], 0),
+        mc("s4", "\u201cThe decision had a profound ___ on the town.\u201d", ["affect", "effect", "effectiveness"], 1),
+        mc("s5", "The prefix \u201ccontra-\u201d means \u201cagainst.\u201d Which word means \u201cto say the opposite of\u201d?", ["contradict", "contribute", "contain"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which sentence is correct?", ["Who\u2019s jacket is this?", "Whose jacket is this?", "Whos jacket is this?"], 1),
+        mc("g2", "Which sentence punctuates the appositive correctly?", ["My cousin, a marine biologist, studies kelp forests.", "My cousin a marine biologist, studies kelp forests.", "My cousin, a marine biologist studies kelp forests."], 0),
+        mc("g3", "Which sentence is in the subjunctive mood?", ["If I were the mayor, I would build more parks.", "I was the mayor last year.", "The mayor will build parks."], 0),
+        mc("g4", "Find the error: \u201cThe results of the survey show that each of the students have improved.\u201d", ["\u201cshow\u201d should be \u201cshows\u201d", "\u201chave\u201d should be \u201chas\u201d", "There is no error"], 1),
+        mc("g5", "Which sentence integrates the quotation correctly?", ["The narrator calls the town \u201ca place where time stood still.\u201d", "The narrator calls the town. \u201ca place where time stood still\u201d", "The narrator calls the town, a place where time stood still."], 0)
+      ],
+      reading: {
+        title: "The Clock",
+        text: "Every evening, Mira wound the old clock in her grandfather\u2019s repair shop, though no customers had come in months. Her grandfather had died in the spring, and the shop had passed to her mother, who worked two jobs and had no time for broken watches. The developers had already sent three letters, each politer and more final than the last.\n\n\u201cWhy bother?\u201d her brother asked, scrolling through listings for the condos that would replace the street. \u201cIt\u2019s not like anyone\u2019s coming.\u201d\n\nMira didn\u2019t answer. She liked the sound the clock made at six o\u2019clock \u2014 not a chime exactly, more like a held breath released. Her grandfather used to stop whatever he was doing when it sounded, as if the clock were telling him something only he could hear. Once, when she was seven, she had asked him what it said. \u201cThat\u2019s enough for today,\u201d he\u2019d told her, and switched off the lamp over his workbench.\n\nOn the day the shop closed for good, Mira carried the clock home on the bus, cradling it like something alive. People stared. She didn\u2019t care. At the third stop it began to tick unevenly, and she held it tighter, afraid the jolting road would stop it altogether.\n\nHer brother, sitting across from her, reached out without a word and steadied its base.",
+        items: [
+          mc("r1", "What does the clock most likely symbolize?", ["The family\u2019s connection to the past", "The developers\u2019 power", "Time being wasted"], 0),
+          mc("r2", "\u201cEach politer and more final than the last\u201d suggests that\u2026", ["the pressure to sell was growing", "the developers were becoming friends", "the letters were getting lost"], 0),
+          mc("r3", "What does the brother\u2019s final action suggest?", ["He has come to understand Mira\u2019s feelings", "He wants to sell the clock", "He is angry with Mira"], 0),
+          mc("r4", "What does the grandfather\u2019s phrase \u201cThat\u2019s enough for today\u201d suggest about how he saw the clock?", ["As a signal to rest and end the day\u2019s work", "As a broken machine he wanted to fix", "As something valuable to sell", "As a reminder of the developers"], 0),
+          sa("rs1", "Analyze how the author uses the clock to develop a theme. Refer to specific details.")
+        ]
+      },
+      writing: { prompt: "Choose a book, film, or story you know well. Write a short analytical essay explaining how one character changes. Include a thesis and evidence.", min: 180 }
+    },
+
+    g10: {
+      key: "g10", label: "Grade 10", short: "G10", band: "secondary", readAloud: false,
+      focus: "Composition 10 / Literary Studies 10 range: academic vocabulary, rhetorical appeals, concision, logical fallacies, conjunctive adverbs, evaluating claims and balance in media/informational text, position essay with counterargument",
+      spelling: [
+        mc("s1", "\u201cThe senator\u2019s speech was full of rhetoric but little substance.\u201d Rhetoric most nearly means\u2026", ["persuasive language", "factual data", "poetry"], 0),
+        mc("s2", "Which word is spelled correctly?", ["perseverance", "perserverance", "perseverence"], 0),
+        mc("s3", "\u201cUbiquitous\u201d means\u2026", ["found everywhere", "rare", "ancient"], 0),
+        mc("s4", "\u201cThe findings were ___ by later studies, which reached the same conclusion.\u201d", ["corroborated", "contradicted", "contemplated"], 0),
+        mc("s5", "\u201cThe committee will ___ the proposal before voting.\u201d (meaning: evaluate)", ["appraise", "apprise", "approve"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which appeal does this use? \u201cAs a doctor with 20 years of experience, I recommend\u2026\u201d", ["ethos", "pathos", "logos"], 0),
+        mc("g2", "Which sentence is most concise?", ["Due to the fact that it was raining, the game was cancelled.", "Because it rained, the game was cancelled.", "The game, owing to the fact of rain, was cancelled."], 1),
+        mc("g3", "Which is an example of the bandwagon fallacy?", ["Everyone is buying these shoes, so they must be the best.", "These shoes passed three durability tests.", "These shoes are on sale until Friday."], 0),
+        mc("g4", "Which sentence is punctuated correctly?", ["The test was hard; however, most students passed.", "The test was hard, however; most students passed.", "The test was hard however, most students passed."], 0),
+        mc("g5", "What effect do the short sentences create? \u201cWe waited. We hoped. Nothing came.\u201d", ["Tension and finality", "Humour", "Statistical detail"], 0)
+      ],
+      reading: {
+        title: "The Attention Economy",
+        text: "Most free apps are not truly free. Instead of charging money, many earn revenue by selling advertising, which means the product being sold is, in a sense, your attention. The longer you stay, the more ads you see, and the more data the company can collect about what keeps you watching.\n\nTo keep users engaged, designers may use features like infinite scrolling, autoplay, and unpredictable rewards, such as notifications that sometimes bring good news and sometimes nothing at all. Psychologists compare this last feature to a slot machine, where uncertainty keeps people pulling the lever. Because you never know which refresh will bring something interesting, checking becomes a habit.\n\nCritics argue that such design exploits human psychology, especially in younger users whose impulse control is still developing. Some governments have begun debating rules that would limit certain features for minors. Defenders respond that these same features simply give people what they want: entertainment, connection, and information delivered quickly and for free. They also note that many users say they enjoy these apps and feel more connected to friends because of them.\n\nEither way, understanding how an app is built can help users make deliberate choices. Turning off non-essential notifications, setting time limits, or simply noticing the urge to refresh are small acts that shift some control back to the person holding the phone.",
+        items: [
+          mc("r1", "What is the central claim of the text?", ["Free apps often profit from users\u2019 attention", "Apps cost too much money", "Notifications are always good news"], 0),
+          mc("r2", "Why does the text compare notifications to a slot machine?", ["To show how unpredictability keeps people engaged", "To show that apps involve gambling money", "To explain how casinos work"], 0),
+          mc("r3", "The author\u2019s stance is best described as\u2026", ["mostly informative, presenting both critics and defenders", "strongly against all technology", "promoting a specific app"], 0),
+          mc("r4", "In the final paragraph, \u201cdeliberate\u201d most nearly means\u2026", ["intentional and carefully considered", "accidental", "slow and boring", "secret"], 0),
+          sa("rs1", "Evaluate whether the author presents a balanced view. Use evidence from the text.")
+        ]
+      },
+      writing: { prompt: "Write a well-organized essay (at least 3 paragraphs) taking a position: Do social media platforms do more good than harm for teenagers? Include a clear thesis, evidence and examples, and a response to a counterargument.", min: 250 }
+    },
+
+    g11: {
+      key: "g11", label: "Grade 11", short: "G11", band: "secondary", readAloud: false,
+      focus: "Advanced vocabulary, rhetorical and literary devices (antithesis, dramatic irony), subjunctive, dangling modifiers, poetry analysis, identity and voice, analytical/reflective essay",
+      spelling: [
+        mc("s1", "\u201cEphemeral\u201d most nearly means\u2026", ["short-lived", "eternal", "loud"], 0),
+        mc("s2", "Which word is spelled correctly?", ["idiosyncrasy", "idiosyncracy", "idiosincrasy"], 0),
+        mc("s3", "\u201cThe policy had pernicious effects on small businesses.\u201d Pernicious means\u2026", ["harmful in a gradual or subtle way", "helpful", "temporary"], 0),
+        mc("s4", "\u201cHer ___ reply, just two words, ended the debate.\u201d", ["laconic", "verbose", "garrulous"], 0),
+        mc("s5", "\u201cJuxtaposition\u201d refers to\u2026", ["placing two contrasting things side by side", "a type of rhyme", "repeating a consonant sound"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which device is used in \u201cIt was the best of times, it was the worst of times\u201d?", ["antithesis", "hyperbole", "onomatopoeia"], 0),
+        mc("g2", "Which sentence uses the subjunctive correctly?", ["The teacher insisted that he submit the essay.", "The teacher insisted that he submits the essay.", "The teacher insisted that he was submitting the essay."], 0),
+        mc("g3", "Which is an example of dramatic irony?", ["The audience knows the letter is a trap, but the hero does not.", "A fire station burns down.", "Saying \u201cnice weather\u201d during a storm."], 0),
+        mc("g4", "What is the function of the dash in \u201cShe had one goal \u2014 to win\u201d?", ["To emphasize what follows", "To show a range", "To join two subjects"], 0),
+        mc("g5", "Which revision fixes the dangling modifier in \u201cAfter finishing the essay, the TV was turned on\u201d?", ["After finishing the essay, I turned on the TV.", "After finishing the essay, the TV turned on.", "The TV was turned on after finishing the essay."], 0)
+      ],
+      reading: {
+        title: "Inheritance (a poem)",
+        text: "My mother\u2019s hands knew bread before they knew English \u2014\nhow flour forgives, how dough remembers.\nIn this new kitchen, the oven speaks a different language,\nbut her palms still press the old words in.\n\nShe does not measure. She listens:\nthe hush of yeast, the slap of dough on wood,\na recipe carried across an ocean\nin the creases of her knuckles.\n\nOn Sundays I stand beside her, clumsy,\nmy English quick and my hands slow.\nShe laughs, folds my fingers over the dough,\nand says the word for bread in both our languages.\n\nSomeday the oven will speak to me too.\nI am learning its grammar one loaf at a time.",
+        items: [
+          mc("r1", "What does the speaker suggest about the mother\u2019s hands?", ["They carry knowledge from her past and culture", "They are injured", "They are just learning to bake"], 0),
+          mc("r2", "\u201cThe oven speaks a different language\u201d is best described as\u2026", ["personification suggesting a new and unfamiliar country", "a literal fact about the oven", "hyperbole about noise"], 0),
+          mc("r3", "Which is the best statement of the poem\u2019s theme?", ["Identity and culture endure through tradition, even in a new place", "Baking bread is difficult", "Modern ovens are confusing"], 0),
+          mc("r4", "What does \u201cmy English quick and my hands slow\u201d suggest about the speaker?", ["They are more at home in English than in the family tradition", "They read slowly", "They dislike baking", "They are learning English for the first time"], 0),
+          sa("rs1", "How does the poet use bread-making to explore identity? Refer to at least two specific words or images.")
+        ]
+      },
+      writing: { prompt: "Write an analytical or reflective essay: How does language shape a person\u2019s identity? Draw on personal experience, the poem, or other texts. Include a thesis, structured paragraphs, and a conclusion.", min: 300 }
+    },
+
+    g12: {
+      key: "g12", label: "Grade 12", short: "G12", band: "secondary", readAloud: false,
+      focus: "English Studies 12 range: sophisticated vocabulary, rhetorical parallelism, satire, critical lenses, pronoun reference, precise thesis statements, evaluating argument and rhetoric, formal essay",
+      spelling: [
+        mc("s1", "\u201cObfuscate\u201d means\u2026", ["to make unclear", "to clarify", "to celebrate"], 0),
+        mc("s2", "\u201cThe essay\u2019s argument was specious.\u201d Specious means\u2026", ["seemingly reasonable but actually false", "very detailed", "widely accepted"], 0),
+        mc("s3", "Which word is spelled correctly?", ["vicissitude", "viscissitude", "vicisitude"], 0),
+        mc("s4", "\u201cHegemony\u201d refers to\u2026", ["dominance of one group over others", "a type of poem", "an economic recession"], 0),
+        mc("s5", "\u201cRather than offer evidence, the critic resorted to ___ attacks on the author\u2019s character.\u201d", ["ad hominem", "a priori", "bona fide"], 0)
+      ],
+      grammar: [
+        mc("g1", "Which sentence uses parallelism most effectively?", ["We came to learn, to question, and to change.", "We came to learn, questioning, and for change.", "We came for learning, to question, and changing."], 0),
+        mc("g2", "A text that critiques society through exaggeration and humour is\u2026", ["satire", "an elegy", "an epic"], 0),
+        mc("g3", "Reading a text by examining power and class relationships is using\u2026", ["a Marxist lens", "a formalist lens", "a biographical lens"], 0),
+        mc("g4", "Which revision fixes the unclear pronoun in \u201cWhen Ana met Priya, she was nervous\u201d?", ["When Ana met Priya, Ana was nervous.", "When Ana met Priya, she was nervous, she said.", "Ana met Priya, and she was nervous."], 0),
+        mc("g5", "Which is the strongest thesis statement?", ["Shakespeare\u2019s Macbeth shows how unchecked ambition corrodes both the individual and the state.", "Macbeth is a play with many themes.", "In this essay I will talk about Macbeth."], 0)
+      ],
+      reading: {
+        title: "On Being Bored",
+        text: "We have engineered boredom out of modern life with remarkable efficiency. Every queue, every bus ride, every pause between tasks can now be filled with a glowing rectangle. A generation ago, waiting for an appointment meant leafing through old magazines or staring at the wall. Today it means a feed calibrated so that we never have to stare at anything at all.\n\nAnd yet something may have been lost in this victory. Boredom, uncomfortable as it is, has long been the soil in which daydreams take root \u2014 and daydreaming has been linked by researchers to creative problem-solving. The wandering mind is not idle; it rehearses conversations, connects distant memories, and stumbles onto ideas it was not looking for.\n\nTo abolish boredom, then, is perhaps to abolish one of the mind\u2019s quieter workshops. A person who is never bored may also be a person who is rarely surprised by their own thoughts.\n\nThis is not an argument for nostalgia. The same devices that fill our idle moments have also connected isolated people, opened libraries to anyone with a signal, and made it possible to learn almost anything. The question is not whether technology should fill our idle moments, but whether we should let it fill all of them.",
+        items: [
+          mc("r1", "What is the author\u2019s central claim?", ["Constant stimulation may cost us the creative benefits of boredom", "Boredom should be eliminated", "Technology is entirely harmful"], 0),
+          mc("r2", "\u201cThe soil in which daydreams take root\u201d is\u2026", ["a metaphor presenting boredom as fertile ground", "a literal description of gardening", "an example of irony"], 0),
+          mc("r3", "What does the final sentence do?", ["Reframes the debate as a question of degree", "Summarizes research statistics", "Rejects technology completely"], 0),
+          mc("r4", "Why does the author include the paragraph that begins \u201cThis is not an argument for nostalgia\u201d?", ["To acknowledge technology\u2019s benefits and anticipate an objection", "To change the subject", "To prove that boredom is harmful", "To summarize the research on daydreaming"], 0),
+          sa("rs1", "Evaluate the effectiveness of the author\u2019s argument. Consider rhetorical devices and any weaknesses.")
+        ]
+      },
+      writing: { prompt: "Write a formal argumentative or analytical essay (5 paragraphs recommended): To what extent does technology shape how we think? Include a precise thesis, integrated evidence, a counterargument, and a conclusion that extends the argument.", min: 350 }
+    },
+
+    // ---------- ELL track (BC ELL Standards 2017 levels) ----------
+    ell1: {
+      key: "ell1", label: "ELL Beginning (1)", short: "ELL 1", band: "ell", readAloud: true,
+      focus: "Basic everyday vocabulary (colours, numbers, classroom objects), be/have, a/an, simple questions, short familiar text",
+      spelling: [
+        mc("s1", "Which one is a colour?", ["red", "run", "ten"], 0),
+        mc("s2", "What do you use to write?", ["a pencil", "a cup", "a shoe"], 0),
+        mc("s3", "Which number is \u201cseven\u201d?", ["7", "17", "70"], 0),
+        mc("s4", "Which word means the opposite of \u201cbig\u201d?", ["small", "tall", "fast"], 0),
+        mc("s5", "You sleep in a ___.", ["bed", "book", "bus"], 0)
+      ],
+      grammar: [
+        mc("g1", "I ___ a student.", ["am", "is", "are"], 0),
+        mc("g2", "She ___ a dog.", ["have", "has", "is"], 1),
+        mc("g3", "This is ___ apple.", ["a", "an", "and"], 1),
+        mc("g4", "They ___ happy.", ["is", "are", "am"], 1),
+        mc("g5", "Which one is a question?", ["What is your name?", "My name is Lin.", "I like dogs."], 0)
+      ],
+      reading: {
+        title: "My Day",
+        text: "My name is Ana. I go to school every day. I like math and art. After school, I play soccer with my friend. At night, I eat dinner with my family.",
+        items: [
+          mc("r1", "What is her name?", ["Ana", "Lin", "Sam"], 0),
+          mc("r2", "What does Ana like?", ["math and art", "music", "science"], 0),
+          mc("r3", "When does Ana eat dinner with her family?", ["at night", "in the morning", "at school"], 0),
+          sa("rs1", "What do you like to do after school? Write one sentence.")
+        ]
+      },
+      writing: { prompt: "Write 2 or 3 sentences about yourself. (Example: My name is ___. I like ___.)", min: 15 }
+    },
+
+    ell2: {
+      key: "ell2", label: "ELL Developing (2)", short: "ELL 2", band: "ell", readAloud: true,
+      focus: "Practical vocabulary (feelings, places, days), simple past, do/does, there is/are, comparatives, sequenced everyday text",
+      spelling: [
+        mc("s1", "I wash my hands with ___.", ["soap", "bread", "paper"], 0),
+        mc("s2", "Which word is a feeling?", ["tired", "table", "Tuesday"], 0),
+        mc("s3", "The opposite of \u201cearly\u201d is ___.", ["late", "fast", "near"], 0),
+        mc("s4", "You buy food at the ___.", ["grocery store", "library", "bank"], 0),
+        mc("s5", "Which one is a day of the week?", ["Monday", "March", "morning"], 0)
+      ],
+      grammar: [
+        mc("g1", "Yesterday, I ___ to the park.", ["go", "went", "going"], 1),
+        mc("g2", "___ you like pizza?", ["Do", "Does", "Are"], 0),
+        mc("g3", "He ___ his homework every night.", ["do", "does", "doing"], 1),
+        mc("g4", "There ___ three books on the desk.", ["is", "are", "be"], 1),
+        mc("g5", "I am ___ than my brother.", ["tall", "taller", "tallest"], 1)
+      ],
+      reading: {
+        title: "A Rainy Saturday",
+        text: "Last Saturday, it rained all day. Kenji wanted to play outside, but he could not. First, he read a comic book. Then he helped his dad make soup. In the afternoon, his cousin came to visit. They played a board game together. Kenji was sad in the morning, but he was happy at night.",
+        items: [
+          mc("r1", "What was the weather on Saturday?", ["rainy", "sunny", "snowy"], 0),
+          mc("r2", "What did Kenji help his dad make?", ["soup", "a cake", "a game"], 0),
+          mc("r3", "How did Kenji feel at night?", ["happy", "sad", "angry"], 0),
+          sa("rs1", "Why could Kenji not play outside?")
+        ]
+      },
+      writing: { prompt: "Write 3 to 5 sentences about what you did last weekend. Use past tense verbs (went, ate, played).", min: 30 }
+    },
+
+    ell3: {
+      key: "ell3", label: "ELL Expanding (3)", short: "ELL 3", band: "ell", readAloud: false,
+      focus: "Beginning academic vocabulary, connectors (because/but/so), future tense, superlatives, present perfect with for/since, feelings and change over time in narrative",
+      spelling: [
+        mc("s1", "In science class, we \u201cobserve\u201d a plant. \u201cObserve\u201d means ___.", ["watch carefully", "eat", "throw away"], 0),
+        mc("s2", "Which word joins two ideas to give a reason?", ["because", "but", "then"], 0),
+        mc("s3", "A \u201cneighbour\u201d is a person who ___.", ["lives near you", "teaches you", "sells food"], 0),
+        mc("s4", "Which word means \u201cvery big\u201d?", ["huge", "tiny", "quiet"], 0),
+        mc("s5", "We use \u201cI\u2019m going to\u2026\u201d to talk about ___.", ["the future", "the past", "only right now"], 0)
+      ],
+      grammar: [
+        mc("g1", "Tomorrow, we ___ visit the museum.", ["will", "did", "were"], 0),
+        mc("g2", "She was very tired, ___ she still finished her homework.", ["but", "because", "or"], 0),
+        mc("g3", "This is the ___ movie I have ever seen.", ["good", "better", "best"], 2),
+        mc("g4", "Which sentence is correct?", ["He don\u2019t like coffee.", "He doesn\u2019t like coffee.", "He not like coffee."], 1),
+        mc("g5", "I have lived here ___ three years.", ["for", "since", "from"], 0)
+      ],
+      reading: {
+        title: "A New City",
+        text: "When Fatima moved to Surrey from Cairo, everything felt different. The weather was cooler. The buses were confusing. She did not know anyone at her new school. On her first day, a classmate named Jordan showed her where the library was.\n\nFatima noticed that Jordan was also learning a new language. He was learning French. They both knew how hard it was, so they started helping each other after school. By the end of the month, Fatima still missed Cairo. But the city did not feel so strange anymore.",
+        items: [
+          mc("r1", "Why did everything feel different to Fatima?", ["She moved to a new city", "She got a new job", "She was sick"], 0),
+          mc("r2", "Why did Fatima and Jordan start helping each other?", ["They were both learning a new language", "Their teacher told them to", "They lived next door"], 0),
+          mc("r3", "\u201cThe city did not feel so strange anymore\u201d means\u2026", ["she was getting used to it", "she wanted to leave", "the city changed"], 0),
+          sa("rs1", "How did Fatima\u2019s feelings change from the beginning to the end? Use \u201cat first\u201d and \u201clater\u201d in your answer.")
+        ]
+      },
+      writing: { prompt: "Write a paragraph (5 or more sentences) comparing two places you know well, such as your first home and where you live now. Use words like but, because, and also.", min: 50 }
+    },
+
+    ell4: {
+      key: "ell4", label: "ELL Consolidating (4)", short: "ELL 4", band: "ell", readAloud: false,
+      focus: "Academic vocabulary and transition words, conditionals, passive voice, relative clauses, prepositions, cause and effect in informational text, structured paragraph",
+      spelling: [
+        mc("s1", "\u201cThe results were significant.\u201d Significant means ___.", ["important", "small", "colourful"], 0),
+        mc("s2", "Which word signals a contrast?", ["however", "furthermore", "therefore"], 0),
+        mc("s3", "To \u201csummarize\u201d a text means to ___.", ["give the main ideas briefly", "copy every sentence", "draw a picture"], 0),
+        mc("s4", "\u201cDespite the rain, the game continued.\u201d Despite means ___.", ["even though there was", "because of", "after"], 0),
+        mc("s5", "Which word means \u201cto make something better\u201d?", ["improve", "reduce", "ignore"], 0)
+      ],
+      grammar: [
+        mc("g1", "If it rains tomorrow, we ___ stay inside.", ["will", "would", "were"], 0),
+        mc("g2", "The book ___ by millions of people.", ["has been read", "have read", "reading"], 0),
+        mc("g3", "The student ___ won the prize is my friend.", ["who", "which", "whose"], 0),
+        mc("g4", "Which sentence is correct?", ["She suggested that we leave early.", "She suggested us to leave early.", "She suggested to us leave early."], 0),
+        mc("g5", "I\u2019m interested ___ learning about history.", ["in", "on", "at"], 0)
+      ],
+      reading: {
+        title: "Why Do Salmon Return?",
+        text: "Every fall, salmon in British Columbia swim a long way from the ocean back to the rivers where they were born. Scientists believe salmon use their strong sense of smell to find their home stream. The journey is very hard. Salmon stop eating when they enter fresh water, and they must swim against strong currents.\n\nAfter they lay their eggs, most Pacific salmon die. However, their bodies give food to bears, eagles, and even the trees along the river. In this way, the salmon\u2019s journey helps the whole forest. For thousands of years, salmon have also been central to the food, culture, and ways of life of many First Nations in BC.",
+        items: [
+          mc("r1", "How do scientists think salmon find their home stream?", ["By smell", "By following the sun", "By listening to other fish"], 0),
+          mc("r2", "The phrase \u201cIn this way\u201d refers to\u2026", ["the salmon\u2019s bodies providing nutrients", "swimming against currents", "laying eggs in the ocean"], 0),
+          mc("r3", "What is the main idea?", ["The salmon\u2019s journey is difficult but important for the ecosystem", "Bears like to eat salmon", "Salmon live only in the ocean"], 0),
+          sa("rs1", "Explain how salmon help the forest. Use \u201cbecause\u201d or \u201cas a result\u201d in your answer.")
+        ]
+      },
+      writing: { prompt: "Write a paragraph with a topic sentence, three supporting details, and a concluding sentence: What is one tradition from your family or culture, and why is it important?", min: 80 }
+    },
+
+    ell5: {
+      key: "ell5", label: "ELL Bridging (5)", short: "ELL 5", band: "ell", readAloud: false,
+      focus: "Idioms and connotation, formal vs. informal register, third conditional, phrasal verbs, reported speech, academic transitions, near grade-level argument",
+      spelling: [
+        mc("s1", "\u201cShe was on the fence about joining the team\u201d means she was ___.", ["undecided", "sitting outside", "angry"], 0),
+        mc("s2", "Which is the most appropriate way to begin an email to a principal?", ["Dear Ms. Chen,", "Hey Chen!", "Yo, what\u2019s up"], 0),
+        mc("s3", "\u201cHit the books\u201d means ___.", ["study hard", "break something", "read quickly"], 0),
+        mc("s4", "\u201cThe evidence was inconclusive.\u201d Inconclusive means ___.", ["not proving anything for certain", "very strong", "hidden"], 0),
+        mc("s5", "Which word has a negative connotation?", ["stubborn", "determined", "persistent"], 0)
+      ],
+      grammar: [
+        mc("g1", "Had I known about the test, I ___ studied.", ["would have", "will have", "would"], 0),
+        mc("g2", "Which sentence fits a formal science report?", ["The water was heated to 100\u00b0C.", "I heated the water like super hot.", "Me and my friend heated the water."], 0),
+        mc("g3", "Please ___ the form before Friday.", ["fill out", "fill up", "fill down"], 0),
+        mc("g4", "He said, \u201cI am tired.\u201d Which is the correct reported speech?", ["He said that he was tired.", "He said that I am tired.", "He said me that he was tired."], 0),
+        mc("g5", "Which transition shows a result?", ["consequently", "nevertheless", "meanwhile"], 0)
+      ],
+      reading: {
+        title: "Switching Channels",
+        text: "Many multilingual students describe moving between languages as switching channels. At home, they may speak Punjabi or Mandarin with grandparents; at school, they use English for academic tasks; with friends, they might blend both, sometimes in the same sentence. Linguists call this \u201ccode-switching.\u201d\n\nIt was once seen as a sign of confusion, but researchers now generally view it as a sophisticated skill: speakers choose the language that best fits the listener, the topic, and the moment. Still, some students report feeling pressure to hide their first language at school, worried that classmates will see it as a weakness rather than a strength.",
+        items: [
+          mc("r1", "What is the central idea?", ["Code-switching is a skill, though some students feel pressure to hide it", "Multilingual students are confused", "English should be spoken at home"], 0),
+          mc("r2", "How has the view of code-switching changed?", ["From a sign of confusion to a skill", "From a skill to a problem", "It has not changed"], 0),
+          mc("r3", "\u201cSwitching channels\u201d is\u2026", ["a metaphor comparing languages to TV channels", "a literal description", "a scientific term"], 0),
+          sa("rs1", "Do you agree that code-switching is a strength? Support your opinion with one reason from the text and one from your own experience.")
+        ]
+      },
+      writing: { prompt: "Write a short essay (3 or more paragraphs) giving your opinion: Should schools offer classes in students\u2019 first languages? Include a thesis, reasons with examples, and a conclusion.", min: 150 }
+    }
+  };
+
+  // Bonus questions from the earlier Grade 4 version, kept so old saved results still display.
+  const LEGACY_BONUS = {
+    spelling: [
+      mc("sph1", "Which word is spelled correctly?", ["Definately", "Defiantly", "Definitely", "Definitly"], 2),
+      mc("sph2", "Which word is spelled correctly?", ["Seperate", "Separate", "Seperete", "Saparate"], 1),
+      mc("sph3", "Which word is spelled correctly (Canadian spelling)?", ["Center", "Centre", "Centar", "Cente"], 1),
+      mc("sph4", "Which word is spelled correctly?", ["Neccessary", "Necessary", "Neccesary", "Necesary"], 1),
+      mc("sph5", "Which word is spelled correctly?", ["Goverment", "Government", "Governmant", "Govenment"], 1)
+    ],
+    grammar: [
+      mc("grh1", "Which sentence is a compound sentence?", ["She ran fast.", "She ran fast, but she still lost the race.", "Running fast."], 1),
+      mc("grh2", "Choose the correct conjunction: \u201cI wanted to go outside, ___ it started to rain.\u201d", ["and", "but", "or"], 1),
+      mc("grh3", "Which sentence uses quotation marks correctly for dialogue?", ["\u201cWhere are you going? asked Sam.\u201d", "Sam asked, \u201cWhere are you going?\u201d", "Sam asked \u201cWhere are you going\u201d"], 1),
+      mc("grh4", "Which word in this sentence is the preposition?\n\u201cThe cat hid under the table.\u201d", ["cat", "hid", "under", "table"], 2),
+      mc("grh5", "Which sentence uses capitalization correctly for a book title?", ["the secret garden", "The Secret garden", "The Secret Garden"], 2)
+    ],
+    reading: [
+      mc("rch1", "How would the story likely be different if Malia\u2019s grandfather had not been patient with her?", ["She would have given up on gardening", "She would have grown more vegetables", "She would have started sooner", "Nothing would be different"], 0),
+      mc("rch2", "What is this story mainly trying to teach the reader?", ["Gardening is easy for everyone", "Patience leads to rewarding results", "Grandparents know everything", "Vegetables taste better homegrown"], 1)
+    ]
+  };
+
+  const GRADE_LADDER = ["k", "g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8", "g9", "g10", "g11", "g12"];
+  const ELL_LADDER = ["ell1", "ell2", "ell3", "ell4", "ell5"];
+
+  // ================= APP =================
+  const SECTIONS = ["spelling", "grammar", "reading", "writing"];
+  const GRADE_OPTIONS = GRADE_LADDER.map(function (k) { return { key: k, label: SETS[k].label }; });
+  const ELL_OPTIONS = [{ key: "", label: "No" }]
+    .concat(ELL_LADDER.map(function (k) { return { key: k, label: "Yes \u2014 " + SETS[k].label.replace("ELL ", "") }; }))
+    .concat([{ key: "ell-unsure", label: "Yes \u2014 not sure of level" }]);
+  const GRADE_WRITING_LEVELS = ["Not yet graded", "Emerging", "Developing", "Proficient", "Extending"];
+  const ELL_WRITING_LEVELS = ["Not yet graded", "Beginning (1)", "Developing (2)", "Expanding (3)", "Consolidating (4)", "Bridging (5)"];
+  const SHORT_GRADE_OPTIONS = ["Not yet graded", "Meets expectations", "Needs support"];
+
+  function titlesFor(set) {
+    if (set.band === "k") return { spelling: "Letters & Sounds", grammar: "Words & Sentences", reading: "Reading", writing: "Writing" };
+    if (set.band === "secondary") return { spelling: "Vocabulary", grammar: "Language & Style", reading: "Reading", writing: "Writing" };
+    if (set.band === "ell") return { spelling: "Vocabulary", grammar: "Grammar", reading: "Reading", writing: "Writing" };
+    return { spelling: "Spelling", grammar: "Grammar", reading: "Reading", writing: "Writing" };
+  }
+  function nextKeyOf(key) {
+    const l = ELL_LADDER.indexOf(key) !== -1 ? ELL_LADDER : GRADE_LADDER;
+    return l[l.indexOf(key) + 1] || null;
+  }
+  function setLabel(key, src) {
+    if (key === "legacy") return "Grade 4 bonus (earlier version)";
+    if (key === "custom") return SETS[src.baseSet].label + " (new form)";
+    if (key === "custom+") return (SETS[nextKeyOf(src.baseSet)] || SETS[src.baseSet]).label + " (new form)";
+    return SETS[key] ? SETS[key].label : key;
+  }
+  function setShort(key, src) {
+    if (key === "legacy") return "G4 bonus";
+    if (key === "custom") return SETS[src.baseSet].short + " new";
+    if (key === "custom+") return (SETS[nextKeyOf(src.baseSet)] || SETS[src.baseSet]).short + " new";
+    return SETS[key] ? SETS[key].short : key;
+  }
+  function contentFor(src) {
+    if (src.custom) return src.custom;
+    const base = SETS[src.baseSet];
+    if (src.snapshot) return { reading: { title: src.snapshot.readingTitle, text: src.snapshot.readingText, items: base.reading.items }, writing: { prompt: src.snapshot.writingPrompt, min: base.writing.min } };
+    return base;
+  }
+  function passageFor(key, src) { return (key === "custom" || key === "custom+") ? src.custom.reading : SETS[key].reading; }
+  function itemsFor(setKey, section, level, src) {
+    if (setKey === "legacy") return LEGACY_BONUS[section] || [];
+    if (setKey === "custom" || setKey === "custom+") {
+      const c = src && src.custom;
+      if (!c) return [];
+      if (setKey === "custom") return section === "reading" ? c.reading.items : (c[section] || []);
+      return (c.bonus && c.bonus[section]) || [];
+    }
+    const s = SETS[setKey];
+    if (!s) return [];
+    if (section === "reading") return level > 0 ? s.reading.items.filter(function (q) { return q.type === "mc"; }) : s.reading.items;
+    return s[section] || [];
+  }
+  function scoreItems(items, answers) {
+    let c = 0, t = 0;
+    items.forEach(function (q) { if (q.type === "mc") { t++; if (answers && answers[q.id] === q.correct) c++; } });
+    return { correct: c, total: t };
+  }
+
+  // seeded shuffle so answer positions vary but stay stable for a question
+  function rng(seed) { let a = seed; return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function hash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function orderFor(n, seed) {
+    const idx = []; for (let i = 0; i < n; i++) idx.push(i);
+    const r = rng(hash(seed));
+    for (let i = n - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const tmp = idx[i]; idx[i] = idx[j]; idx[j] = tmp; }
+    return idx;
+  }
+
+  function freshState() {
+    return {
+      screen: "landing",
+      studentName: "",
+      gradeKey: "g4",
+      ellChoice: "",
+      stage: { section: "spelling", level: 0 },
+      answers: { spelling: [{}, {}, {}, {}, {}], grammar: [{}, {}, {}, {}, {}], reading: [{}, {}, {}, {}, {}] },
+      done: { spelling: 0, grammar: 0, reading: 0 },
+      skipped: { spelling: null, grammar: null, reading: null },
+      writing: "",
+      notice: "",
+      saveState: "idle",
+      custom: null,
+      prev: null,
+      genError: "",
+      genPhase: "",
+      readAloudChoice: null,
+      reflection: ""
+    };
+  }
+  let state = freshState();
+
+  let teacherState = {
+    loaded: false, loading: false, error: null, submissions: [], openId: null, filter: "", bulkStatus: "", oralDrafts: {}, confirmDelete: null,
+    feedbackDrafts: {}, saveStatus: {}, shortGradeDrafts: {}, writingLevelDrafts: {}, aiStatus: {}
+  };
+
+  let db = null, sampleFn = null;
+  const capsReady = (async function () {
+    if (!(window.claude && typeof window.claude.use === "function")) return;
+    try { db = await window.claude.use("db"); } catch (e) { db = null; }
+    try { sampleFn = await window.claude.use("sample"); } catch (e) { sampleFn = null; }
+  })();
+
+  const app = document.getElementById("app");
+  const topbarSub = document.getElementById("topbarSub");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  // ---------- ladder helpers ----------
+  function isEll() { return !!state.ellChoice; }
+  function ladder() { return isEll() ? ELL_LADDER : GRADE_LADDER; }
+  function baseKey() {
+    if (!isEll()) return state.gradeKey;
+    return state.ellChoice === "ell-unsure" ? "ell1" : state.ellChoice;
+  }
+  function maxClimb() { return isEll() ? 4 : 2; }
+  function setKeyAt(level) { const l = ladder(); const i = l.indexOf(baseKey()) + level; return l[i] || null; }
+  function quizSrc() { return { custom: state.custom, baseSet: baseKey() }; }
+  function stageKey(section, level) {
+    if (state.custom) {
+      if (level === 0) return "custom";
+      if (level === 1 && state.custom.bonus && (state.custom.bonus[section] || []).length) return "custom+";
+    }
+    return setKeyAt(level);
+  }
+
+  function allCorrect(section, level) {
+    const items = itemsFor(stageKey(section, level), section, level, quizSrc()).filter(function (q) { return q.type === "mc"; });
+    const ans = state.answers[section][level];
+    return items.length > 0 && items.every(function (q) { return ans[q.id] === q.correct; });
+  }
+
+  function readAloudOn() { return state.readAloudChoice == null ? !!SETS[baseKey()].readAloud : !!state.readAloudChoice; }
+  function speechOK() { return typeof window.speechSynthesis !== "undefined" && typeof window.SpeechSynthesisUtterance !== "undefined"; }
+  function speak(text) {
+    if (!speechOK()) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-CA"; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* ignore */ }
+  }
+  function listenBtn(text) {
+    if (!speechOK()) return "";
+    return '<button class="listen-btn" data-action="speak" data-speak="' + esc(text) + '" aria-label="Read aloud">Listen</button>';
+  }
+
+  // ---------- rendering ----------
+  function render() {
+    if (state.screen === "landing") { topbarSub.textContent = "K\u201312 \u00b7 ELL"; app.innerHTML = renderLanding(); }
+    else if (state.screen === "preparing") { topbarSub.textContent = "Preparing"; app.innerHTML = renderPreparing(); }
+    else if (state.screen === "intro") { topbarSub.textContent = "Welcome back"; app.innerHTML = renderIntro(); }
+    else if (state.screen === "quiz") { topbarSub.textContent = SETS[baseKey()].label; app.innerHTML = renderQuiz(); }
+    else if (state.screen === "complete") { topbarSub.textContent = "Complete"; app.innerHTML = renderComplete(); }
+    else if (state.screen === "teacher") { topbarSub.textContent = "Teacher view"; app.innerHTML = renderTeacher(); }
+    attach();
+  }
+
+  function renderLanding() {
+    return (
+      '<div class="card">' +
+        '<h2 class="landing-title">Before we start</h2>' +
+        '<p class="muted">A short check-in with four parts: word work, grammar, reading, and writing. It adjusts to the student\u2019s level \u2014 ace a part and harder questions unlock automatically.</p>' +
+        '<label class="field-label" for="studentName">Student\u2019s name</label>' +
+        '<input type="text" id="studentName" autocomplete="off" value="' + esc(state.studentName) + '" placeholder="Type your name here">' +
+        '<div class="hint" style="margin-top:6px;margin-bottom:0">First name or initials is enough. Use the same spelling each time so later check-ins can build on this one.</div>' +
+        '<div class="two-col">' +
+          '<div><label class="field-label" for="gradeSelect">Grade</label>' +
+          '<select id="gradeSelect" data-role="grade">' +
+            GRADE_OPTIONS.map(function (o) { return '<option value="' + o.key + '"' + (o.key === state.gradeKey ? " selected" : "") + '>' + esc(o.label) + '</option>'; }).join("") +
+          '</select></div>' +
+          '<div><label class="field-label" for="ellSelect">English Language Learner?</label>' +
+          '<select id="ellSelect" data-role="ell">' +
+            ELL_OPTIONS.map(function (o) { return '<option value="' + o.key + '"' + (o.key === state.ellChoice ? " selected" : "") + '>' + esc(o.label) + '</option>'; }).join("") +
+          '</select></div>' +
+        '</div>' +
+        (speechOK() ? '<label class="check-row"><input type="checkbox" data-role="readaloud"' + (readAloudOn() ? " checked" : "") + '> Read-aloud support (Listen buttons)</label>' : '') +
+        '<p class="hint" style="margin-top:10px">' + (isEll()
+          ? "ELL track: uses the five BC ELL Standards levels (Beginning to Bridging). Questions climb a level each time a section is perfect."
+          : "Grade track: matched to the BC English Language Arts curriculum for the chosen grade. A perfect section unlocks up to two grades higher.") + '</p>' +
+        '<div class="notice">' + esc(state.notice) + '</div>' +
+        '<div class="btn-row"><button class="btn-primary" data-action="start">Start check-in</button></div>' +
+      '</div>' +
+''
+    );
+  }
+
+  function renderQuiz() {
+    const base = SETS[baseKey()];
+    const titles = titlesFor(base);
+    const section = state.stage.section;
+    const level = state.stage.level;
+    const src = quizSrc();
+    const setKey = section === "writing" ? (state.custom ? "custom" : baseKey()) : stageKey(section, level);
+    const content = contentFor(src);
+    const secIdx = SECTIONS.indexOf(section);
+    const speakOn = readAloudOn();
+    let body = "";
+
+    if (level > 0) {
+      body += '<div class="bonus-flag">Bonus round \u2014 ' + esc(setLabel(setKey, src).replace(" (new form)", "")) + ' level</div>' +
+        '<p class="bonus-intro">Perfect score! These questions are a step harder. Skipping is fine \u2014 it won\u2019t count against you.</p>';
+    }
+
+    if (section === "reading") {
+      const pass = passageFor(setKey, src);
+      body += '<div class="passage"><div class="passage-head"><h3>' + esc(pass.title) + '</h3>' + (speakOn ? listenBtn(pass.title + ". " + pass.text) : "") + '</div>' +
+        pass.text.split("\n\n").map(function (p) { return '<p>' + esc(p).replace(/\n/g, "<br>") + '</p>'; }).join("") + '</div>';
+    }
+    if (section === "writing") {
+      body += '<div class="question-prompt">' + esc(content.writing.prompt) + (speakOn ? " " + listenBtn(content.writing.prompt) : "") + '</div>' +
+        '<textarea id="writingArea" placeholder="Write here...">' + esc(state.writing) + '</textarea>' +
+        '<div class="hint" id="writingCount">' + writingCountText() + '</div>' +
+        '<label class="field-label" for="reflectionArea" style="margin-top:18px">Think about today (optional)</label>' +
+        '<div class="hint" style="margin-top:0">What is one thing you did well, and one thing you want to get better at?' + (speakOn ? " " + listenBtn("Think about today. What is one thing you did well, and one thing you want to get better at?") : "") + '</div>' +
+        '<textarea id="reflectionArea" class="short-answer" placeholder="I did well at... I want to get better at...">' + esc(state.reflection) + '</textarea>';
+    } else {
+      body += itemsFor(setKey, section, level, src).map(function (q) {
+        return q.type === "short" ? renderShortQ(section, level, q, speakOn) : renderMC(section, level, setKey, q, speakOn);
+      }).join("");
+    }
+
+    const isLast = section === "writing";
+    return (
+      '<div class="progress-row">' + SECTIONS.map(function (s, i) {
+        const cls = s === section ? "is-active" : (i < secIdx ? "is-done" : "");
+        return '<div class="progress-tab ' + cls + '">' + esc(titles[s]) + '</div>';
+      }).join("") + '</div>' +
+      '<div class="card">' + body +
+        '<div class="notice">' + esc(state.notice) + '</div>' +
+        '<div class="btn-row">' +
+          (level > 0 ? '<button class="btn-ghost" data-action="skip-bonus">Skip bonus</button>'
+            : '<button class="btn-ghost" data-action="back">' + (secIdx === 0 ? "Cancel" : "Back") + '</button>') +
+          '<button class="btn-primary" data-action="' + (isLast ? "submit" : "next") + '">' + (isLast ? "Submit" : "Next") + '</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderMC(section, level, setKey, q, speakOn) {
+    const chosen = state.answers[section][level][q.id];
+    const order = orderFor(q.options.length, setKey + ":" + q.id);
+    const name = section + "-" + level + "-" + q.id;
+    return (
+      '<div class="question">' +
+        '<div class="question-prompt">' + esc(q.prompt).replace(/\n/g, "<br>") + (speakOn ? " " + listenBtn(q.prompt + " " + order.map(function (i) { return q.options[i]; }).join(", ")) : "") + '</div>' +
+        '<div class="options">' +
+          order.map(function (i) {
+            return '<label class="option"><input type="radio" name="' + esc(name) + '" value="' + i + '" data-section="' + section + '" data-level="' + level + '" data-qid="' + esc(q.id) + '"' + (chosen === i ? " checked" : "") + '> <span>' + esc(q.options[i]) + '</span></label>';
+          }).join("") +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderShortQ(section, level, q, speakOn) {
+    const val = state.answers[section][level][q.id] || "";
+    return (
+      '<div class="question">' +
+        '<span class="short-tag">Short answer</span>' +
+        '<div class="question-prompt">' + esc(q.prompt) + (speakOn ? " " + listenBtn(q.prompt) : "") + '</div>' +
+        '<textarea class="short-answer" data-role="short-answer" data-section="' + section + '" data-level="' + level + '" data-qid="' + esc(q.id) + '" placeholder="Write your answer...">' + esc(val) + '</textarea>' +
+      '</div>'
+    );
+  }
+
+  function writingCountText() {
+    const words = state.writing.trim().length ? state.writing.trim().split(/\s+/).length : 0;
+    return words + " word" + (words === 1 ? "" : "s");
+  }
+
+  function renderComplete() {
+    let saveLine = "";
+    if (state.saveState === "saved") saveLine = '<p class="ok-line">Saved for your teacher.</p>';
+    else if (state.saveState === "offline") saveLine = '<p class="err-line">This device couldn\u2019t save your results right now \u2014 let your teacher know.</p>';
+    else if (state.saveState === "saving") saveLine = '<p class="muted">Saving\u2026</p>';
+    return (
+      '<div class="card">' +
+        '<div class="complete-mark">\u2713</div>' +
+        '<h2>Nice work, ' + esc(state.studentName || "there") + '!</h2>' +
+        '<p>You finished all four parts. Your teacher will look over your answers and talk with you about them.</p>' +
+        (state.lastScores ? '<div class="profile"><div class="profile-title">Your marks so far</div>' + state.lastScores.map(function (l) { return '<div class="small">' + esc(l) + '</div>'; }).join("") + '<div class="small">Writing: your teacher will mark this.</div></div>' : '') +
+        saveLine +
+        '<div class="btn-row"><button class="btn-primary" data-action="restart">Start a new check-in</button></div>' +
+      '</div>'
+    );
+  }
+
+  // ---------- teacher ----------
+  function normalize(id, data) {
+    const common = {
+      id: id,
+      studentName: data.studentName || "Unnamed",
+      submittedAt: data.submittedAt,
+      writing: data.writing || "",
+      teacherFeedback: data.teacherFeedback || "",
+      writingLevel: data.writingLevel || "Not yet graded",
+      answerGrades: data.answerGrades || {},
+      aiNotes: data.aiNotes || {},
+      aiFeedback: data.aiFeedback || "",
+      aiGraded: !!data.aiGraded,
+      reviewed: !!data.reviewed,
+      custom: data.custom || null,
+      snapshot: data.snapshot || null,
+      reflection: data.reflection || "",
+      accommodations: data.accommodations || {},
+      oralLanguage: data.oralLanguage || "Not observed",
+      aiCriteria: data.aiCriteria || null
+    };
+    if (data.v === 2) {
+      return Object.assign(common, {
+        track: data.track || "grade",
+        baseSet: data.baseSet || "g4",
+        gradeKey: data.gradeKey || null,
+        attempts: data.attempts || { spelling: [], grammar: [], reading: [] },
+        skipped: data.skipped || {}
+      });
+    }
+    // earlier single-grade version
+    const ans = data.answers || {};
+    const attempts = {}, skipped = {};
+    ["spelling", "grammar", "reading"].forEach(function (sec) {
+      attempts[sec] = [{ set: "g4", answers: ans[sec] || {}, score: scoreItems(itemsFor("g4", sec, 0), ans[sec] || {}) }];
+      const b = data.bonus && data.bonus[sec];
+      if (b && b.offered) {
+        if (b.completed) attempts[sec].push({ set: "legacy", answers: b.answers || {}, score: scoreItems(LEGACY_BONUS[sec], b.answers || {}) });
+        else skipped[sec] = "legacy";
+      }
+    });
+    return Object.assign(common, { track: "grade", baseSet: "g4", gradeKey: "g4", attempts: attempts, skipped: skipped });
+  }
+
+  function chainLine(sub, sec) {
+    const list = (sub.attempts[sec] || []).map(function (a) { return setShort(a.set, sub) + " " + a.score.correct + "/" + a.score.total; });
+    if (sub.skipped && sub.skipped[sec]) list.push(setShort(sub.skipped[sec], sub) + " skipped");
+    return list.join(" \u2192 ");
+  }
+
+  const AREA_NAMES = {
+    spelling: "Word study & conventions",
+    grammar: "Language structures & conventions",
+    reading: "Comprehend & connect (reading)",
+    writing: "Create & communicate (writing)"
+  };
+  function gradeIndex(key) { return GRADE_LADDER.indexOf(key); }
+  function areaPct(sub, sec, i) {
+    const a = (sub.attempts[sec] || [])[i];
+    if (!a || !a.score) return null;
+    let c = a.score.correct, t = a.score.total;
+    if (sec === "reading" && i === 0) {
+      contentFor(sub).reading.items.forEach(function (q) {
+        if (q.type !== "short") return;
+        const g = sub.answerGrades[q.id];
+        if (g === "Meets expectations") { c++; t++; } else if (g === "Needs support") { t++; }
+      });
+    }
+    return t ? c / t : null;
+  }
+  // Indicative only: K-9 uses BC's proficiency scale; 10-12 courses report percentages; ELL uses the ELL Standards levels.
+  function areaResult(sub, sec) {
+    const p0 = areaPct(sub, sec, 0), p1 = areaPct(sub, sec, 1);
+    if (p0 == null) return "\u2014";
+    const pct = Math.round(p0 * 100) + "%";
+    if (sub.track === "ell") {
+      let best = null;
+      (sub.attempts[sec] || []).forEach(function (a, i) { const p = areaPct(sub, sec, i); if (p != null && p >= 0.8) best = a.set; });
+      const baseLbl = SETS[sub.baseSet].label.replace("ELL ", "");
+      if (!best) return "Not yet consistent at " + baseLbl + " (" + pct + ")";
+      const lbl = best.indexOf("custom") === 0 ? setLabel(best, sub).replace(" (new form)", "") : SETS[best].label;
+      return "Working at " + lbl.replace("ELL ", "") + " (" + pct + " at start level)";
+    }
+    if (gradeIndex(sub.baseSet) >= gradeIndex("g10")) return pct + " at " + SETS[sub.baseSet].label + " level";
+    let lvl = p0 >= 0.8 ? "Proficient" : p0 >= 0.5 ? "Developing" : "Emerging";
+    if (p0 >= 0.9 && p1 != null && p1 >= 0.8) lvl = "Extending";
+    return lvl + " (" + pct + ")";
+  }
+
+  function reachedLabel(sub, sec) {
+    // highest level with a perfect score
+    let best = null;
+    (sub.attempts[sec] || []).forEach(function (a) { if (a.score.total > 0 && a.score.correct === a.score.total) best = a.set; });
+    return best ? setShort(best, sub).replace(" new", "") : "below " + setShort(sub.baseSet, sub);
+  }
+
+  function rowLabel(sub) {
+    if (sub.track === "ell") return SETS[sub.baseSet].label.replace(" (", " start (") + (sub.gradeKey && SETS[sub.gradeKey] ? " \u00b7 " + SETS[sub.gradeKey].label : "");
+    return SETS[sub.baseSet] ? SETS[sub.baseSet].label : sub.baseSet;
+  }
+
+  function renderTeacher() {
+    let head = '<div class="card">' +
+      '<div class="teacher-head">' +
+        '<h2 style="margin:0">Results</h2>' +
+        '<div style="display:flex;gap:8px">' +
+          '<button class="btn-ghost btn-small" data-action="refresh-teacher">Refresh</button>' +
+          '<button class="btn-ghost btn-small" data-action="goto-landing">Back to check-in</button>' +
+        '</div>' +
+      '</div>';
+
+    if (!db) return head + '<p class="notice" style="margin-top:14px">Results storage isn\u2019t available in this view, so past check-ins can\u2019t be loaded here.</p></div>' + renderAlignment();
+    if (teacherState.loading) return head + '<p class="muted" style="margin-top:14px">Loading\u2026</p></div>';
+    if (teacherState.error) return head + '<p class="notice" style="margin-top:14px">Couldn\u2019t load results. Try refresh.</p></div>';
+
+    const unmarked = teacherState.submissions.filter(needsMarking).length;
+    head += '<div class="bulk-row">' +
+      '<button class="btn-ai btn-small" data-action="mark-all"' + (unmarked ? "" : " disabled") + '>Mark all unmarked (' + unmarked + ')</button>' +
+      (teacherState.bulkStatus ? ' <span class="ai-note">' + esc(teacherState.bulkStatus) + '</span>' : '') +
+    '</div>';
+    head += '<input type="text" id="filterInput" class="filter" data-role="filter" placeholder="Filter by student name" value="' + esc(teacherState.filter) + '">';
+    const f = teacherState.filter.trim().toLowerCase();
+    const list = teacherState.submissions.filter(function (s) { return !f || s.studentName.toLowerCase().indexOf(f) !== -1; });
+    if (!teacherState.submissions.length) head += '<div class="empty-state">No check-ins saved yet.</div>';
+    else if (!list.length) head += '<div class="empty-state">No matches.</div>';
+    else head += '<div style="margin-top:14px">' + list.map(renderSubmissionRow).join("") + '</div>';
+    return head + '</div>' + renderAlignment();
+  }
+
+  function renderAlignment() {
+    function block(keys) {
+      return keys.map(function (k) { return '<div class="align-row"><b>' + esc(SETS[k].label) + '</b> \u2014 ' + esc(SETS[k].focus) + '</div>'; }).join("");
+    }
+    return '<details class="card align"><summary>Curriculum alignment</summary>' +
+      '<p class="muted small">Grade track follows the BC English Language Arts K\u20139 learning standards and the Grade 10\u201312 ELA course range (e.g., Composition 10, Literary Studies 10, English Studies 12). ELL track uses the five levels of the BC English Language Learning Standards (2017).</p>' +
+      block(GRADE_LADDER) + '<hr>' + block(ELL_LADDER) +
+      '<p class="muted small">Not assessed here: oral language (rated separately in the ELL Standards) and the First Peoples oral tradition competency, which is best taught with authentic First Peoples resources.</p>' +
+      '</details>';
+  }
+
+  function markBadge(sub) {
+    if (sub.reviewed) return ' <span class="badge badge-ok">Reviewed</span>';
+    if (sub.aiGraded) return ' <span class="badge">AI-marked — check</span>';
+    return ' <span class="badge badge-muted">Not marked</span>';
+  }
+
+  function writingLevelsFor(sub) { return sub.track === "ell" ? ELL_WRITING_LEVELS : GRADE_WRITING_LEVELS; }
+
+  function renderSubmissionRow(sub) {
+    const isOpen = teacherState.openId === sub.id;
+    const date = sub.submittedAt ? new Date(sub.submittedAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "";
+    const t = titlesFor(SETS[sub.baseSet] || SETS.g4);
+    let html = '<div class="sub-item">' +
+      '<div class="sub-head" data-action="toggle-sub" data-id="' + esc(sub.id) + '">' +
+        '<div><div class="sub-name">' + esc(sub.studentName) + markBadge(sub) + '</div><div class="sub-date">' + esc(rowLabel(sub)) + ' \u00b7 ' + esc(date) + '</div></div>' +
+        '<div class="sub-scores">' +
+          ["spelling", "grammar", "reading"].map(function (sec) { return '<div>' + esc(t[sec]) + ': ' + esc(chainLine(sub, sec)) + '</div>'; }).join("") +
+        '</div>' +
+      '</div>';
+
+    if (isOpen) {
+      const levels = writingLevelsFor(sub);
+      const wlDraft = teacherState.writingLevelDrafts[sub.id] != null ? teacherState.writingLevelDrafts[sub.id] : sub.writingLevel;
+      const aiStatus = teacherState.aiStatus[sub.id] || "";
+      const shortDrafts = teacherState.shortGradeDrafts[sub.id] || {};
+      const base = SETS[sub.baseSet] || SETS.g4;
+
+      html += '<div class="sub-body">' +
+        '<div class="profile">' +
+          '<div class="profile-title">' + (sub.track === "ell" ? "Indicative ELL profile" : "Indicative results") + '</div>' +
+          '<table class="result-table">' +
+            ["spelling", "grammar", "reading"].map(function (sec) { return '<tr><td>' + esc(AREA_NAMES[sec]) + '</td><td>' + esc(areaResult(sub, sec)) + '</td></tr>'; }).join("") +
+            '<tr><td>' + esc(AREA_NAMES.writing) + '</td><td>' + esc(sub.writingLevel) + '</td></tr>' +
+            '<tr><td>Oral language (your observation)</td><td>' + esc(sub.oralLanguage) + '</td></tr>' +
+          '</table>' +
+          '<div class="muted small" style="margin-top:6px">' + (sub.track === "ell"
+            ? "BC ELL Standards rate each skill separately, so an uneven profile is normal. \u201cWorking at\u201d = highest level scored 80%+."
+            : gradeIndex(sub.baseSet) >= gradeIndex("g10")
+              ? "Grade 10\u201312 courses report percentages and letter grades, so results are shown as percentages."
+              : "Proficiency scale used in BC K\u20139 reporting. Extending requires 90%+ plus 80%+ on the next level\u2019s bonus.") +
+          ' One short check-in \u2014 confirm with classroom evidence before reporting.</div>' +
+          (sub.accommodations && sub.accommodations.readAloud && !(SETS[sub.baseSet] || {}).readAloud ? '<div class="small" style="margin-top:4px">Read-aloud support was on: reading results also reflect listening comprehension.</div>' : '') +
+        '</div>' +
+        (sub.aiGraded && !sub.reviewed ? '<p class="ai-banner">Written answers were marked automatically. Check the marks and feedback below, adjust anything you disagree with, then save to confirm.</p>' : '') +
+        (sub.custom ? '<div class="profile"><div class="profile-title">Personalised form</div><div class="small">Built from this student\u2019s earlier results. Focus: ' + esc((sub.custom.focusAreas || []).join("; ")) + '</div>' +
+          (sub.custom.verified === false ? '<div class="small err-line" style="margin-top:4px">Answer key wasn\u2019t double-checked for this form \u2014 glance over any marked-wrong answers.</div>' : '') + '</div>' : '') +
+        '<div class="muted small">Focus for ' + esc(base.label) + ': ' + esc(base.focus) + '</div>';
+
+      ["spelling", "grammar", "reading"].forEach(function (sec) {
+        (sub.attempts[sec] || []).forEach(function (a, i) {
+          html += '<h3 class="detail-h">' + esc(t[sec]) + ' \u2014 ' + esc(setLabel(a.set, sub)) + (i > 0 ? " (bonus)" : "") + ' <span class="muted small">' + a.score.correct + '/' + a.score.total + '</span></h3>';
+          html += renderAttemptItems(sub, sec, a, i, shortDrafts);
+        });
+        if (sub.skipped && sub.skipped[sec]) html += '<p class="muted small">' + esc(t[sec]) + ' bonus at ' + esc(setLabel(sub.skipped[sec], sub)) + ' was offered and skipped.</p>';
+      });
+
+      html += '<h3 class="detail-h">Writing</h3>' +
+        '<div class="muted small">' + esc(contentFor(sub).writing.prompt) + '</div>' +
+        '<div class="writing-block">' + esc(sub.writing || "(No response)") + '</div>' +
+        (sub.aiCriteria ? '<div class="small criteria">AI by aspect: ' + ["meaning", "style", "form", "conventions"].map(function (k) { return '<span><b>' + k.charAt(0).toUpperCase() + k.slice(1) + '</b> ' + esc(sub.aiCriteria[k] || "\u2014") + '</span>'; }).join("") + '</div>' : '') +
+        '<div class="grade-row"><label class="small" style="font-weight:700" for="wl-' + esc(sub.id) + '">' + (sub.track === "ell" ? "ELL writing level" : "Proficiency") + '</label>' +
+        '<select id="wl-' + esc(sub.id) + '" data-role="writing-level" data-id="' + esc(sub.id) + '">' +
+          levels.map(function (lvl) { return '<option value="' + esc(lvl) + '"' + (lvl === wlDraft ? " selected" : "") + '>' + esc(lvl) + '</option>'; }).join("") +
+        '</select></div>' +
+        '<div class="grade-row"><label class="small" style="font-weight:700" for="oral-' + esc(sub.id) + '">Oral language (observed)</label>' +
+        '<select id="oral-' + esc(sub.id) + '" data-role="oral" data-id="' + esc(sub.id) + '">' +
+          ["Not observed"].concat(levels.slice(1)).map(function (lvl) { const cur = teacherState.oralDrafts[sub.id] != null ? teacherState.oralDrafts[sub.id] : sub.oralLanguage; return '<option value="' + esc(lvl) + '"' + (lvl === cur ? " selected" : "") + '>' + esc(lvl) + '</option>'; }).join("") +
+        '</select></div>' +
+        (sub.reflection ? '<h3 class="detail-h">Student self-assessment</h3><div class="writing-block">' + esc(sub.reflection) + '</div>' : '') +
+        '<div class="field-inline"><button class="btn-ai btn-small" data-action="grade-ai" data-id="' + esc(sub.id) + '">Re-mark with AI</button>' +
+          (aiStatus ? ' <span class="ai-note">' + esc(aiStatus) + '</span>' : '') + '</div>' +
+        '<div class="field-inline"><label class="field-label" for="fb-' + esc(sub.id) + '">Feedback notes</label>' +
+        '<textarea id="fb-' + esc(sub.id) + '" data-role="feedback" data-id="' + esc(sub.id) + '" placeholder="Notes for this student\u2019s next lesson...">' + esc(teacherState.feedbackDrafts[sub.id] != null ? teacherState.feedbackDrafts[sub.id] : sub.teacherFeedback) + '</textarea></div>' +
+        '<div class="save-row"><button class="btn-ghost btn-small" data-action="save-feedback" data-id="' + esc(sub.id) + '">Save grading &amp; feedback</button>' +
+        '<span class="save-status">' + esc(teacherState.saveStatus[sub.id] || "") + '</span>' +
+        '<button class="btn-link" data-action="delete-record" data-id="' + esc(sub.id) + '">' + (teacherState.confirmDelete === sub.id ? "Tap again to permanently delete" : "Delete this check-in") + '</button></div>' +
+      '</div>';
+    }
+    return html + '</div>';
+  }
+
+  function renderAttemptItems(sub, sec, attempt, level, shortDrafts) {
+    let items = itemsFor(attempt.set, sec, level, sub);
+    const answers = attempt.answers || {};
+    if (Object.keys(answers).length) items = items.filter(function (q) { return Object.prototype.hasOwnProperty.call(answers, q.id); });
+    return items.map(function (q) {
+      if (q.type === "mc") {
+        const given = answers[q.id];
+        const ok = given === q.correct;
+        const givenText = given != null && q.options[given] != null ? q.options[given] : "\u2014 no answer \u2014";
+        return '<div class="detail-q"><div>' + esc(q.prompt.replace(/\n/g, " ")) + '</div>' +
+          '<div><span class="' + (ok ? "tag-correct" : "tag-wrong") + '">' + (ok ? "Correct: " : "Answered: ") + esc(givenText) + '</span>' +
+          (ok ? "" : ' <span class="muted">(correct: ' + esc(q.options[q.correct]) + ')</span>') + '</div></div>';
+      }
+      const saved = sub.answerGrades[q.id];
+      const current = shortDrafts[q.id] != null ? shortDrafts[q.id] : (saved || "Not yet graded");
+      const note = sub.aiNotes[q.id];
+      return '<div class="detail-q"><div>' + esc(q.prompt) + '</div>' +
+        '<div class="writing-block" style="margin:6px 0">' + esc(answers[q.id] || "(No response)") + '</div>' +
+        (note ? '<div class="ai-note">AI note: ' + esc(note) + '</div>' : '') +
+        '<div class="grade-row"><select data-role="short-grade" data-id="' + esc(sub.id) + '" data-qid="' + esc(q.id) + '">' +
+          SHORT_GRADE_OPTIONS.map(function (o) { return '<option value="' + esc(o) + '"' + (o === current ? " selected" : "") + '>' + esc(o) + '</option>'; }).join("") +
+        '</select></div></div>';
+    }).join("");
+  }
+
+  async function loadTeacherData(force) {
+    await capsReady;
+    if (!db) { render(); return; }
+    if (teacherState.loaded && !force) { render(); return; }
+    teacherState.loading = true; teacherState.error = null; render();
+    try {
+      const snap = await db.collection("submissions").orderBy("submittedAt", "desc").limit(200).get();
+      teacherState.submissions = snap.docs.map(function (d) { return normalize(d.id, d.data()); });
+      teacherState.loaded = true;
+    } catch (e) { teacherState.error = e; }
+    teacherState.loading = false;
+    render();
+  }
+
+  // ---------- events ----------
+  function attach() {
+    app.onclick = function (e) {
+      const el = e.target.closest("[data-action]");
+      if (!el) return;
+      const a = el.dataset.action;
+      if (a === "speak") { e.preventDefault(); return speak(el.dataset.speak || ""); }
+      if (a === "start") return doStart();
+      if (a === "begin-quiz") return beginQuiz();
+      if (a === "use-standard") { state.custom = null; return beginQuiz(); }
+      if (a === "retry-build") return buildForReturning();
+      if (a === "next") return doNext();
+      if (a === "back") return doBack();
+      if (a === "skip-bonus") return doSkipBonus();
+      if (a === "submit") return doSubmit();
+      if (a === "restart") { genToken++; state = freshState(); return render(); }
+      if (a === "goto-landing") { if (window.speechSynthesis) window.speechSynthesis.cancel(); state.screen = "landing"; state.notice = ""; return render(); }
+      if (a === "goto-teacher") { state.screen = "teacher"; return loadTeacherData(false); }
+      if (a === "refresh-teacher") return loadTeacherData(true);
+      if (a === "toggle-sub") { teacherState.openId = teacherState.openId === el.dataset.id ? null : el.dataset.id; return render(); }
+      if (a === "save-feedback") return doSaveFeedback(el.dataset.id);
+      if (a === "grade-ai") return doGradeAI(el.dataset.id);
+      if (a === "delete-record") return doDelete(el.dataset.id);
+      if (a === "mark-all") return doMarkAll();
+    };
+    app.onchange = function (e) {
+      const t = e.target;
+      if (t.matches('input[type="radio"][data-section]')) {
+        state.answers[t.dataset.section][+t.dataset.level][t.dataset.qid] = parseInt(t.value, 10);
+        state.notice = "";
+      }
+      if (t.dataset.role === "grade") { state.gradeKey = t.value; state.readAloudChoice = null; render(); }
+      if (t.dataset.role === "readaloud") { state.readAloudChoice = t.checked; }
+      if (t.dataset.role === "oral") teacherState.oralDrafts[t.dataset.id] = t.value;
+      if (t.dataset.role === "ell") { state.ellChoice = t.value; state.readAloudChoice = null; render(); }
+      if (t.dataset.role === "writing-level") teacherState.writingLevelDrafts[t.dataset.id] = t.value;
+      if (t.dataset.role === "short-grade") {
+        const id = t.dataset.id;
+        if (!teacherState.shortGradeDrafts[id]) teacherState.shortGradeDrafts[id] = {};
+        teacherState.shortGradeDrafts[id][t.dataset.qid] = t.value;
+      }
+    };
+    app.oninput = function (e) {
+      const t = e.target;
+      if (t.id === "studentName") state.studentName = t.value;
+      if (t.id === "reflectionArea") state.reflection = t.value;
+      if (t.id === "writingArea") {
+        state.writing = t.value;
+        const c = document.getElementById("writingCount");
+        if (c) c.textContent = writingCountText();
+      }
+      if (t.dataset.role === "short-answer") state.answers[t.dataset.section][+t.dataset.level][t.dataset.qid] = t.value;
+      if (t.dataset.role === "feedback") teacherState.feedbackDrafts[t.dataset.id] = t.value;
+      if (t.dataset.role === "filter") {
+        const v = t.value;
+        teacherState.filter = v;
+        render();
+        const fi = document.getElementById("filterInput");
+        if (fi) { fi.focus(); fi.setSelectionRange(v.length, v.length); }
+      }
+    };
+  }
+
+  function stageComplete() {
+    const sec = state.stage.section, lvl = state.stage.level;
+    if (sec === "writing") return state.writing.trim().length >= (SETS[baseKey()].writing.min || 5);
+    const ans = state.answers[sec][lvl];
+    return itemsFor(stageKey(sec, lvl), sec, lvl, quizSrc()).every(function (q) {
+      const v = ans[q.id];
+      if (q.type === "short") return typeof v === "string" && v.trim().length >= 2;
+      return v !== undefined;
+    });
+  }
+
+  function goSection(idx) {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    state.notice = "";
+    state.stage = { section: SECTIONS[idx], level: 0 };
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- returning students: personalised forms ----------
+  function nameKey(n) { return String(n || "").trim().toLowerCase().replace(/\s+/g, " "); }
+
+  async function findPrevious(name) {
+    await capsReady;
+    if (!db) return [];
+    const key = nameKey(name);
+    const snap = await db.collection("submissions").orderBy("submittedAt", "desc").limit(300).get();
+    return snap.docs.map(function (d) { return normalize(d.id, d.data()); })
+      .filter(function (s) { return nameKey(s.studentName) === key; })
+      .slice(0, 3);
+  }
+
+  function beginQuiz() {
+    if (genCtl) { try { genCtl.abort(); } catch (e) { /* ignore */ } }
+    genToken++;
+    state.stage = { section: "spelling", level: 0 };
+    state.answers = { spelling: [{}, {}, {}, {}, {}], grammar: [{}, {}, {}, {}, {}], reading: [{}, {}, {}, {}, {}] };
+    state.done = { spelling: 0, grammar: 0, reading: 0 };
+    state.skipped = { spelling: null, grammar: null, reading: null };
+    state.notice = "";
+    state.screen = "quiz";
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  let starting = false;
+  async function doStart() {
+    if (starting) return;
+    if (!state.studentName.trim()) { state.notice = "Please type the student\u2019s name first."; return render(); }
+    starting = true;
+    state.custom = null; state.genError = ""; state.prev = null;
+    state.notice = "Checking for earlier check-ins\u2026"; render();
+    let prev = [];
+    try { prev = await findPrevious(state.studentName); } catch (e) { prev = []; }
+    starting = false;
+    if (!prev.length) return beginQuiz();
+    state.prev = prev;
+    // pre-fill level from last time if the teacher left the defaults alone
+    return buildForReturning();
+  }
+
+  let genCtl = null, genToken = 0;
+  async function buildForReturning() {
+    const myToken = ++genToken;
+    genCtl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    state.screen = "preparing"; state.genError = ""; state.custom = null;
+    state.genPhase = "Reading last check-in and writing new questions\u2026";
+    render();
+    try {
+      const custom = await buildCustomTest(state.prev, baseKey(), genCtl ? genCtl.signal : undefined, function (phase) {
+        if (myToken !== genToken) return;
+        state.genPhase = phase;
+        if (state.screen === "preparing") render();
+      });
+      if (myToken !== genToken) return;
+      state.custom = custom;
+    } catch (e) {
+      if (myToken !== genToken) return;
+      state.custom = null;
+      if (e && e.code === "cancelled") return;
+      state.genError = (e && e.message === "too-few") ? "Not enough of the new questions passed the answer check."
+        : (e && e.code) ? aiErrorText(e) : "Something went wrong building the new test.";
+    }
+    state.screen = "intro";
+    render();
+  }
+
+  function renderPreparing() {
+    return '<div class="card">' +
+      '<h2>Welcome back, ' + esc(state.studentName.trim()) + '</h2>' +
+      '<p>Building a new check-in based on last time. This usually takes about a minute.</p>' +
+      '<p class="muted small" style="display:flex;align-items:center;gap:10px"><span class="spinner"></span>' + esc(state.genPhase) + '</p>' +
+      '<div class="btn-row"><button class="btn-ghost" data-action="use-standard">Use the standard test instead</button></div>' +
+    '</div>';
+  }
+
+  function renderIntro() {
+    const last = state.prev && state.prev[0];
+    const t = titlesFor(SETS[baseKey()]);
+    const when = last && last.submittedAt ? new Date(last.submittedAt).toLocaleDateString(undefined, { dateStyle: "medium" }) : "";
+    let html = '<div class="card"><h2>Welcome back, ' + esc(state.studentName.trim()) + '</h2>';
+    if (last) {
+      html += '<div class="profile"><div class="profile-title">Last check-in \u00b7 ' + esc(when) + ' \u00b7 ' + esc(rowLabel(last)) + '</div>' +
+        ["spelling", "grammar", "reading"].map(function (sec) { return '<div class="small">' + esc(t[sec]) + ': ' + esc(chainLine(last, sec)) + '</div>'; }).join("") +
+        '<div class="small">Writing: ' + esc(last.writingLevel) + '</div></div>';
+    }
+    if (state.custom) {
+      html += '<p>This is a new ' + esc(SETS[baseKey()].label) + ' check-in. It focuses on:</p>' +
+        '<ul class="focus-list">' + (state.custom.focusAreas || []).map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul>' +
+        '<p class="muted small">Plus a new reading passage and writing task.' + (state.custom.verified === false ? " (The answer check couldn\u2019t run this time.)" : "") + '</p>' +
+        '<div class="btn-row"><button class="btn-ghost" data-action="use-standard">Standard test</button><button class="btn-primary" data-action="begin-quiz">Start</button></div>';
+    } else {
+      const seenStandard = (state.prev || []).some(function (p) { return !p.custom && p.baseSet === baseKey(); });
+      html += '<p class="err-line">Couldn\u2019t build a new test: ' + esc(state.genError) + '</p>' +
+        '<p class="muted small">You can try again, or use the standard ' + esc(SETS[baseKey()].label) + ' test.' +
+        (seenStandard ? " This student has done the standard one before, so questions will repeat." : "") + '</p>' +
+        '<div class="btn-row"><button class="btn-ghost" data-action="use-standard">Standard test</button><button class="btn-primary" data-action="retry-build">Try again</button></div>';
+    }
+    return html + '</div>';
+  }
+
+  function cleanMCList(arr, prefix, max) {
+    if (!Array.isArray(arr)) return [];
+    const out = [];
+    arr.forEach(function (q) {
+      if (!q || typeof q.prompt !== "string" || !q.prompt.trim() || !Array.isArray(q.options)) return;
+      const opts = q.options.map(function (o) { return String(o == null ? "" : o).trim(); });
+      if (opts.length < 3 || opts.length > 5 || opts.some(function (o) { return !o; })) return;
+      if (new Set(opts).size !== opts.length) return; // exact duplicates only (capitalization questions are allowed)
+      const c = Number(q.correct);
+      if (!Number.isInteger(c) || c < 0 || c >= opts.length) return;
+      out.push(mc(prefix + (out.length + 1), q.prompt.trim(), opts, c));
+    });
+    return out.slice(0, max);
+  }
+
+  function wordCount(t) { return String(t || "").trim().split(/\s+/).filter(Boolean).length; }
+
+  async function buildCustomTest(prevList, bKey, signal, onPhase) {
+    await capsReady;
+    if (!sampleFn) { const err = new Error("no-sample"); err.code = "capability_disabled"; throw err; }
+    const base = SETS[bKey];
+    const next = SETS[nextKeyOf(bKey)] || base;
+    const titles = titlesFor(base);
+    const last = prevList[0];
+    const lastContent = contentFor(last);
+    const isEllTrack = base.band === "ell";
+    const gradeText = SETS[state.gradeKey] ? SETS[state.gradeKey].label : "";
+
+    const misses = [];
+    ["spelling", "grammar", "reading"].forEach(function (sec) {
+      (last.attempts[sec] || []).forEach(function (a, i) {
+        itemsFor(a.set, sec, i, last).forEach(function (q) {
+          if (q.type !== "mc") return;
+          const g = a.answers ? a.answers[q.id] : undefined;
+          if (g === q.correct) return;
+          misses.push("- [" + sec + ", " + setLabel(a.set, last) + "] " + q.prompt.replace(/\n/g, " ") + " | student chose: " + (g != null && q.options[g] != null ? q.options[g] : "no answer") + " | correct: " + q.options[q.correct]);
+        });
+      });
+    });
+    const shortLines = lastContent.reading.items.filter(function (q) { return q.type === "short"; }).map(function (q) {
+      return "- " + q.prompt + " | mark: " + (last.answerGrades[q.id] || "not marked") + (last.aiNotes[q.id] ? " | note: " + last.aiNotes[q.id] : "");
+    });
+    const avoid = prevList.map(function (p) { const c = contentFor(p); return "- passage \u201c" + c.reading.title + "\u201d; writing prompt: " + c.writing.prompt; });
+    const earlierFocus = [].concat.apply([], prevList.map(function (p) { return (p.custom && p.custom.focusAreas) || []; }));
+    const ex = function (sec) { return base[sec].slice(0, 2).map(function (q) { return "  " + q.prompt.replace(/\n/g, " ") + " [" + q.options.join(" / ") + "]"; }).join("\n"); };
+    const wc = wordCount(base.reading.text);
+    const lo = Math.max(25, Math.round(wc * 0.8)), hi = Math.round(wc * 1.25);
+
+    const levelDesc = isEllTrack
+      ? "an English Language Learner (" + gradeText + ") at BC English Language Learning Standards (2017) level " + base.label.replace("ELL ", "")
+      : "a " + base.label + " student in British Columbia, following the BC English Language Arts curriculum";
+
+    const prompt =
+      "You are writing a short English check-in for " + levelDesc + ". Use Canadian spelling. All content must be original: no quotations from published works.\n\n" +
+      "THIS LEVEL'S FOCUS: " + base.focus + "\n" +
+      "NEXT LEVEL'S FOCUS (bonus questions only): " + next.focus + "\n" +
+      "Section \"spelling\" is called \"" + titles.spelling + "\"; section \"grammar\" is called \"" + titles.grammar + "\".\n" +
+      "Examples showing the difficulty at this level:\n spelling:\n" + ex("spelling") + "\n grammar:\n" + ex("grammar") + "\n\n" +
+      "THE STUDENT'S LAST CHECK-IN (" + rowLabel(last) + "):\n" +
+      ["spelling", "grammar", "reading"].map(function (sec) { return "- " + titlesFor(SETS[last.baseSet] || base)[sec] + ": " + chainLine(last, sec); }).join("\n") + "\n" +
+      "Questions they got wrong:\n" + (misses.length ? misses.slice(0, 15).join("\n") : "- none") + "\n" +
+      "Short reading answers:\n" + (shortLines.join("\n") || "- none") + "\n" +
+      "Writing: level " + last.writingLevel + ". Feedback: " + (last.teacherFeedback || last.aiFeedback || "none") + "\n" +
+      (earlierFocus.length ? "Earlier focus areas: " + earlierFocus.join("; ") + "\n" : "") + "\n" +
+      "Do NOT reuse these passages or writing prompts:\n" + avoid.join("\n") + "\n\n" +
+      "Write a NEW test:\n" +
+      "- spelling: 6 multiple-choice questions; grammar: 6 multiple-choice questions. About 60% give fresh practice on the specific skills the student missed (new words and sentences, never the same question). The rest cover other skills from this level's focus that were not tested last time. If they missed very little, lean toward the harder end of this level.\n" +
+      "- reading: one new original passage of " + lo + "-" + hi + " words on a different topic from before, with 3 multiple-choice questions (one literal, one inference, one vocabulary-in-context) and 1 short-answer question.\n" +
+      "- bonus: 4 spelling and 4 grammar multiple-choice questions pitched at the NEXT level, and 2 harder multiple-choice questions about the same passage (inference, theme, or author's craft).\n" +
+      "- writing: one new prompt, different in topic or form from before, at a similar length and demand to: \"" + base.writing.prompt + "\"\n" +
+      "- focusAreas: 2-4 short teacher-facing phrases naming what this test targets.\n" +
+      "Every multiple-choice question: 3-4 options, exactly ONE clearly correct answer, plausible distractors that reflect common student errors (not silly ones), no \"all of the above\", answerable without pictures. \"correct\" is the 0-based index of the right option." +
+      (base.readAloud ? " Keep wording very simple; questions may be read aloud." : "") + "\n\n" +
+      "Reply with ONLY JSON in this shape:\n" +
+      '{"focusAreas":["..."],"spelling":[{"prompt":"...","options":["...","...","..."],"correct":0}],"grammar":[{"prompt":"...","options":["..."],"correct":0}],"reading":{"title":"...","text":"paragraphs separated by \\n\\n","mc":[{"prompt":"...","options":["..."],"correct":0}],"short":["..."]},"bonus":{"spelling":[],"grammar":[],"reading":[]},"writing":{"prompt":"..."}}';
+
+    const data = await sampleFn.json(prompt, { signal: signal, cache: false });
+    if (!data || typeof data !== "object") throw new Error("too-few");
+
+    const rd = data.reading || {};
+    const bonus = data.bonus || {};
+    const custom = {
+      key: "custom",
+      baseSet: bKey,
+      createdAt: new Date().toISOString(),
+      focusAreas: (Array.isArray(data.focusAreas) ? data.focusAreas : []).map(String).filter(Boolean).slice(0, 4),
+      spelling: cleanMCList(data.spelling, "cs", 6),
+      grammar: cleanMCList(data.grammar, "cg", 6),
+      reading: {
+        title: String(rd.title || "Reading").trim(),
+        text: String(rd.text || "").trim(),
+        items: cleanMCList(rd.mc, "cr", 3).concat((Array.isArray(rd.short) ? rd.short : []).map(String).filter(function (x) { return x.trim(); }).slice(0, 1).map(function (p, i) { return sa("crs" + (i + 1), p.trim()); }))
+      },
+      bonus: { spelling: cleanMCList(bonus.spelling, "bs", 4), grammar: cleanMCList(bonus.grammar, "bg", 4), reading: cleanMCList(bonus.reading, "br", 2) },
+      writing: { prompt: String((data.writing && data.writing.prompt) || "").trim(), min: base.writing.min },
+      verified: true
+    };
+    if (!custom.focusAreas.length) custom.focusAreas = ["Mixed review at " + base.label];
+
+    // second pass: an independent answer check; drop questions it can't confirm
+    if (onPhase) onPhase("Double-checking the answer key\u2026");
+    const pool = [];
+    ["spelling", "grammar"].forEach(function (sec) {
+      custom[sec].forEach(function (q) { pool.push({ list: custom[sec], q: q, r: false }); });
+      custom.bonus[sec].forEach(function (q) { pool.push({ list: custom.bonus[sec], q: q, r: false }); });
+    });
+    custom.reading.items.forEach(function (q) { if (q.type === "mc") pool.push({ list: custom.reading.items, q: q, r: true }); });
+    custom.bonus.reading.forEach(function (q) { pool.push({ list: custom.bonus.reading, q: q, r: true }); });
+
+    const checkPrompt =
+      "Answer each multiple-choice question for a " + (isEllTrack ? "student learning English" : base.label + " English") + " quiz. Pick the single best option by its 0-based index. If a question has no correct option, more than one defensible answer, or is unclear, answer -1.\n\n" +
+      "READING PASSAGE (for questions marked [R]):\n" + custom.reading.title + "\n" + custom.reading.text + "\n\nQUESTIONS:\n" +
+      pool.map(function (x, i) { return i + ". " + (x.r ? "[R] " : "") + x.q.prompt.replace(/\n/g, " ") + "\n   " + x.q.options.map(function (o, j) { return j + ") " + o; }).join("   "); }).join("\n") +
+      "\n\nReply with ONLY a JSON array of " + pool.length + " integers, one per question in order.";
+    try {
+      const answers = await sampleFn.json(checkPrompt, { signal: signal });
+      if (!Array.isArray(answers) || answers.length !== pool.length) throw new Error("bad-check");
+      pool.forEach(function (x, i) {
+        if (Number(answers[i]) !== x.q.correct) { const k = x.list.indexOf(x.q); if (k !== -1) x.list.splice(k, 1); }
+      });
+    } catch (e) {
+      if (e && e.code === "cancelled") throw e;
+      custom.verified = false;
+    }
+
+    const readingMC = custom.reading.items.filter(function (q) { return q.type === "mc"; }).length;
+    const readingShort = custom.reading.items.filter(function (q) { return q.type === "short"; }).length;
+    if (custom.spelling.length < 4 || custom.grammar.length < 4 || readingMC < 2 || readingShort < 1 || custom.reading.text.length < 40 || !custom.writing.prompt) {
+      throw new Error("too-few");
+    }
+    return custom;
+  }
+
+  function doStartPlaceholder() {}
+
+  function doNext() {
+    if (!stageComplete()) {
+      state.notice = state.stage.section === "writing" ? "Please write a bit more before submitting." : "Please answer every question before continuing.";
+      return render();
+    }
+    const sec = state.stage.section, lvl = state.stage.level;
+    if (sec !== "writing" && allCorrect(sec, lvl) && lvl < maxClimb() && stageKey(sec, lvl + 1)) {
+      state.answers[sec][lvl + 1] = state.answers[sec][lvl + 1] || {};
+      state.notice = "";
+      state.stage = { section: sec, level: lvl + 1 };
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      render(); window.scrollTo(0, 0);
+      return;
+    }
+    state.done[sec] = lvl;
+    state.skipped[sec] = null;
+    goSection(SECTIONS.indexOf(sec) + 1);
+  }
+
+  function doSkipBonus() {
+    const sec = state.stage.section, lvl = state.stage.level;
+    state.done[sec] = lvl - 1;
+    state.skipped[sec] = stageKey(sec, lvl);
+    state.answers[sec][lvl] = {};
+    goSection(SECTIONS.indexOf(sec) + 1);
+  }
+
+  function doBack() {
+    const idx = SECTIONS.indexOf(state.stage.section);
+    if (idx === 0) { state.screen = "landing"; state.notice = ""; return render(); }
+    goSection(idx - 1);
+  }
+
+  async function doSubmit() {
+    if (!stageComplete()) { state.notice = "Please write a bit more before submitting."; return render(); }
+    const attempts = {};
+    ["spelling", "grammar", "reading"].forEach(function (sec) {
+      attempts[sec] = [];
+      for (let lvl = 0; lvl <= state.done[sec]; lvl++) {
+        const key = stageKey(sec, lvl);
+        const ans = state.answers[sec][lvl] || {};
+        attempts[sec].push({ set: key, answers: ans, score: scoreItems(itemsFor(key, sec, lvl, quizSrc()), ans) });
+      }
+    });
+    const record = {
+      v: 2,
+      studentName: state.studentName.trim(),
+      nameKey: nameKey(state.studentName),
+      custom: state.custom || null,
+      submittedAt: new Date().toISOString(),
+      track: isEll() ? "ell" : "grade",
+      baseSet: baseKey(),
+      gradeKey: state.gradeKey,
+      attempts: attempts,
+      skipped: state.skipped,
+      scores: { spelling: attempts.spelling[0].score, grammar: attempts.grammar[0].score, reading: attempts.reading[0].score },
+      writing: state.writing,
+      reflection: state.reflection.trim(),
+      accommodations: { readAloud: readAloudOn() },
+      snapshot: state.custom ? null : { readingTitle: SETS[baseKey()].reading.title, readingText: SETS[baseKey()].reading.text, writingPrompt: SETS[baseKey()].writing.prompt },
+      writingLevel: "Not yet graded",
+      answerGrades: {},
+      aiNotes: {}
+    };
+    state.screen = "complete";
+    state.saveState = "saving";
+    render();
+    try {
+      await capsReady;
+      if (!db) {
+        await saveToForm(record);
+        state.saveState = "saved";
+        render();
+        return;
+      }
+      const ref = await db.collection("submissions").add(record);
+      state.saveState = "saved";
+      render();
+      // mark the written answers in the background so results are ready for the teacher
+      if (ref && ref.id) {
+        markAndSave(ref.id, normalize(ref.id, record)).catch(function () { /* teacher can mark later */ });
+      }
+      return;
+    } catch (e) { state.saveState = "offline"; }
+    render();
+  }
+
+  // Public site: each finished check-in is posted to a Netlify form, which stores it for the teacher.
+  function resultLines(sub) {
+    const t = titlesFor(SETS[sub.baseSet] || SETS.g4);
+    return ["spelling", "grammar", "reading"].map(function (sec) { return t[sec] + ": " + chainLine(sub, sec); });
+  }
+  async function saveToForm(record) {
+    const sub = normalize("new", record);
+    const content = contentFor(sub);
+    const readAns = ((sub.attempts.reading || [])[0] || { answers: {} }).answers;
+    const shorts = content.reading.items.filter(function (q) { return q.type === "short"; })
+      .map(function (q) { return "Q: " + q.prompt + "\nA: " + (readAns[q.id] || "(blank)"); });
+    const scores = resultLines(sub);
+    const summary = [
+      sub.studentName + " \u2014 " + rowLabel(sub) + " \u2014 " + new Date(record.submittedAt).toLocaleString(),
+      "", "AUTO-MARKED", scores.join("\n"),
+      "", "READING SHORT ANSWERS (" + content.reading.title + ")", shorts.join("\n\n") || "(none)",
+      "", "WRITING PROMPT", content.writing.prompt, "", "WRITING", record.writing || "(blank)",
+      record.reflection ? "\nREFLECTION\n" + record.reflection : ""
+    ].join("\n");
+    const body = new URLSearchParams({
+      "form-name": "english-check-in", "bot-field": "",
+      student: sub.studentName, level: rowLabel(sub), scores: scores.join(" | "),
+      summary: summary, record: JSON.stringify(record)
+    }).toString();
+    state.lastScores = scores;
+    const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body });
+    if (!res.ok) throw new Error("save-failed");
+  }
+
+  async function doDelete(id) {
+    if (teacherState.confirmDelete !== id) { teacherState.confirmDelete = id; return render(); }
+    teacherState.confirmDelete = null;
+    await capsReady;
+    if (!db) return;
+    try {
+      await db.doc("submissions/" + id).delete();
+      teacherState.submissions = teacherState.submissions.filter(function (s) { return s.id !== id; });
+      teacherState.openId = null;
+    } catch (e) { teacherState.saveStatus[id] = "Couldn\u2019t delete \u2014 try again."; }
+    render();
+  }
+
+  async function doSaveFeedback(id) {
+    await capsReady;
+    if (!db) return;
+    const sub = teacherState.submissions.find(function (s) { return s.id === id; });
+    if (!sub) return;
+    const text = teacherState.feedbackDrafts[id] != null ? teacherState.feedbackDrafts[id] : sub.teacherFeedback;
+    const wl = teacherState.writingLevelDrafts[id] != null ? teacherState.writingLevelDrafts[id] : sub.writingLevel;
+    const grades = Object.assign({}, sub.answerGrades, teacherState.shortGradeDrafts[id] || {});
+    const notes = Object.assign({}, sub.aiNotes);
+    const oral = teacherState.oralDrafts[id] != null ? teacherState.oralDrafts[id] : sub.oralLanguage;
+    teacherState.saveStatus[id] = "Saving\u2026"; render();
+    try {
+      await db.doc("submissions/" + id).update({ teacherFeedback: text, writingLevel: wl, answerGrades: grades, aiNotes: notes, oralLanguage: oral, aiCriteria: sub.aiCriteria || null, reviewed: true });
+      sub.teacherFeedback = text; sub.writingLevel = wl; sub.answerGrades = grades; sub.oralLanguage = oral; sub.reviewed = true;
+      teacherState.saveStatus[id] = "Saved.";
+    } catch (e) { teacherState.saveStatus[id] = "Couldn\u2019t save \u2014 try again."; }
+    render();
+  }
+
+  function matchLevel(str, options) {
+    if (!str) return null;
+    const s = String(str).toLowerCase();
+    for (let i = 1; i < options.length; i++) { if (s.indexOf(options[i].split(" ")[0].toLowerCase()) !== -1) return options[i]; }
+    return null;
+  }
+
+  function aiErrorText(e) {
+    const code = e && e.code;
+    if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].indexOf(code) !== -1) return "AI marking isn\u2019t available for this account.";
+    if (code === "rate_limited") return "Too many requests right now \u2014 try again shortly.";
+    if (code === "invalid_json") return "Couldn\u2019t read the AI\u2019s answer \u2014 try again.";
+    return "Couldn\u2019t mark automatically \u2014 try again.";
+  }
+
+  // Marks the short answers and writing for one submission. Returns plain data; does not save.
+  async function aiAssess(sub) {
+    await capsReady;
+    if (!sampleFn) { const err = new Error("no-sample"); err.code = "capability_disabled"; throw err; }
+    const base = SETS[sub.baseSet] || SETS.g4;
+    const content = contentFor(sub);
+    const readAttempt = (sub.attempts.reading || [])[0] || { answers: {} };
+    const shortQs = content.reading.items.filter(function (q) { return q.type === "short"; });
+    const levels = writingLevelsFor(sub);
+    const gradeText = sub.gradeKey && SETS[sub.gradeKey] ? SETS[sub.gradeKey].label : base.label;
+
+    const scale = sub.track === "ell"
+      ? "This student is an English Language Learner (" + gradeText + "). Place the writing on the BC English Language Learning Standards (2017) five-level scale: Beginning (1), Developing (2), Expanding (3), Consolidating (4), Bridging (5). For short answers, judge comprehension of the passage, not grammatical accuracy."
+      : "This student is in " + gradeText + " in British Columbia, Canada. Use the BC proficiency scale for the writing: Emerging, Developing, Proficient, Extending, judged against " + gradeText + " English Language Arts expectations. For short answers, judge whether the response shows age-appropriate understanding of the passage.";
+
+    const example = {
+      readingShortAnswers: shortQs.map(function (q) { return { id: q.id, meetsExpectation: true, note: "one short sentence explaining the mark" }; }),
+      writingLevel: levels[2],
+      criteria: { meaning: levels[2], style: levels[2], form: levels[2], conventions: levels[2] },
+      writingFeedback: "2-3 sentences: a specific strength, then one concrete next step.",
+      writingConventionsNote: "one short sentence about spelling, grammar, or punctuation patterns to watch for"
+    };
+
+    const prompt =
+      "You are helping a teacher mark a student's reading and writing. " + scale + " Also rate the writing on the four BC Performance Standards aspects \u2014 meaning (ideas and information), style (word choice and sentence variety), form (organization), and conventions (spelling, grammar, punctuation) \u2014 using the same scale. Give credit for what the student can do; do not penalize a young or English-learning student for ideas expressed simply. Write feedback for the teacher, in a warm, specific, practical voice, not addressed to the student. If an answer is blank or off-topic, say so plainly.\n\n" +
+      "READING PASSAGE (" + content.reading.title + "):\n" + content.reading.text + "\n\n" +
+      "SHORT-ANSWER QUESTIONS:\n" + shortQs.map(function (q) { return "Q (" + q.id + "): " + q.prompt + "\nStudent's answer: " + (readAttempt.answers[q.id] || "(blank)"); }).join("\n\n") + "\n\n" +
+      "WRITING PROMPT:\n" + content.writing.prompt + "\nStudent's writing:\n" + (sub.writing || "(blank)") + "\n\n" +
+      "Reply with ONLY a JSON object in exactly this shape, no extra text:\n" + JSON.stringify(example);
+
+    const data = await sampleFn.json(prompt);
+    const answerGrades = {}, aiNotes = {};
+    (data.readingShortAnswers || []).forEach(function (it) {
+      if (!it || !it.id) return;
+      answerGrades[it.id] = it.meetsExpectation ? "Meets expectations" : "Needs support";
+      if (it.note) aiNotes[it.id] = it.note;
+    });
+    return {
+      answerGrades: answerGrades,
+      aiNotes: aiNotes,
+      writingLevel: matchLevel(data.writingLevel, levels),
+      criteria: data.criteria && typeof data.criteria === "object" ? {
+        meaning: matchLevel(data.criteria.meaning, levels), style: matchLevel(data.criteria.style, levels),
+        form: matchLevel(data.criteria.form, levels), conventions: matchLevel(data.criteria.conventions, levels) } : null,
+      feedback: [data.writingFeedback, data.writingConventionsNote].filter(Boolean).join(" ")
+    };
+  }
+
+  // Marks and saves straight to the record (used after submit and for "Mark all").
+  async function markAndSave(id, sub) {
+    const r = await aiAssess(sub);
+    const update = {
+      aiGraded: true,
+      reviewed: false,
+      aiNotes: Object.assign({}, sub.aiNotes || {}, r.aiNotes),
+      answerGrades: Object.assign({}, r.answerGrades, sub.answerGrades || {}),
+      aiFeedback: r.feedback,
+      aiCriteria: r.criteria
+    };
+    if (r.writingLevel && (!sub.writingLevel || sub.writingLevel === "Not yet graded")) update.writingLevel = r.writingLevel;
+    if (!sub.teacherFeedback) update.teacherFeedback = r.feedback;
+    await db.doc("submissions/" + id).update(update);
+    return update;
+  }
+
+  // Teacher button on one submission: fills the fields for review (not saved until "Save").
+  async function doGradeAI(id) {
+    const sub = teacherState.submissions.find(function (s) { return s.id === id; });
+    if (!sub) return;
+    teacherState.aiStatus[id] = "Marking\u2026"; render();
+    try {
+      const r = await aiAssess(sub);
+      teacherState.shortGradeDrafts[id] = Object.assign({}, teacherState.shortGradeDrafts[id] || {}, r.answerGrades);
+      Object.assign(sub.aiNotes, r.aiNotes);
+      if (r.writingLevel) teacherState.writingLevelDrafts[id] = r.writingLevel;
+      if (r.feedback) teacherState.feedbackDrafts[id] = r.feedback;
+      if (r.criteria) sub.aiCriteria = r.criteria;
+      teacherState.aiStatus[id] = "Marks and feedback added below \u2014 review, then save.";
+    } catch (e) { teacherState.aiStatus[id] = aiErrorText(e); }
+    render();
+  }
+
+  function needsMarking(sub) { return !sub.aiGraded && !sub.reviewed && (!sub.writingLevel || sub.writingLevel === "Not yet graded"); }
+
+  async function doMarkAll() {
+    await capsReady;
+    if (!sampleFn || !db) { teacherState.bulkStatus = "AI marking isn\u2019t available in this view."; return render(); }
+    const todo = teacherState.submissions.filter(needsMarking);
+    if (!todo.length) { teacherState.bulkStatus = "Everything is already marked."; return render(); }
+    let done = 0, failed = 0;
+    for (let i = 0; i < todo.length; i++) {
+      teacherState.bulkStatus = "Marking " + (i + 1) + " of " + todo.length + "\u2026"; render();
+      try { Object.assign(todo[i], await markAndSave(todo[i].id, todo[i])); done++; }
+      catch (e) { failed++; if (e && e.code === "rate_limited") { teacherState.bulkStatus = "Paused: too many requests. Marked " + done + "; try again shortly."; return render(); } }
+    }
+    teacherState.bulkStatus = "Marked " + done + (failed ? ", " + failed + " couldn\u2019t be marked" : "") + ".";
+    render();
+  }
+
+  render();
+
+})();
+</script>
+</body>
+</html>
