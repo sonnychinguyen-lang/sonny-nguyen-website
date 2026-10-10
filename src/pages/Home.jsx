@@ -48,6 +48,11 @@ export default function Home() {
               <span className="menu-title">Work history &amp; skills</span>
               <span className="menu-kicker">With a PDF to download</span>
             </Link>
+            <a className="menu-item" href="https://claude.ai/artifact/WJo8k7XuMirVasonwXDGVx" target="_blank" rel="noreferrer">
+              <span className="menu-index">Teacher</span>
+              <span className="menu-title">Marking desk</span>
+              <span className="menu-kicker">Private · sign-in required</span>
+            </a>
             <div className="menu-about">
               <div className="menu-index">About</div>
               <p>K–7 English teacher in Richmond, BC, with a criminal justice degree and forensic investigations coursework at BCIT. The analysis projects are coursework: scenarios and datasets are training material, not live files.</p>
